@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+*.vsix
+
+# Testing
+.vscode-test/
+
+# IDE settings (optional - can be excluded or included based on team preference)
+.vscode/
+.vscode/*.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor backup files
+*~
+*.swp
+*.swo
+.idea/
+*.sublime-*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Environment files (if you add any secrets)
+.env
+.env.local
+.env.*.local
+
+# Coverage reports (if you add tests)
+coverage/
+*.lcov
+.nyc_output/
+
+# Production builds
+dist/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Internal development documentation (not for public repository)
+docs-internal/
+

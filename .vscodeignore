@@ -1,0 +1,77 @@
+# Build and development files
+.vscode/**
+.vscode-test/**
+src/**
+.gitignore
+tsconfig.json
+*.vsix
+
+# Development scripts
+scripts/**
+
+# Documentation (keep only essential docs in package)
+docs/**
+START_HERE.md
+
+# Test files
+tests/**
+test-sample.md
+example_documents/**
+
+# Images (except icon)
+image/**
+screenshots/**
+
+# Node modules and logs
+node_modules
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+*.swp
+*.swo
+*~
+.idea/
+*.sublime-*
+
+# Compiled output (we include out/ for the extension to work)
+# out/**/*.map
+*.map
+
+# Temporary files
+*.tmp
+*.temp
+
+# Git files
+.git
+.gitattributes
+.gitignore
+
+# CI/CD
+.github/**
+.gitlab-ci.yml
+.travis.yml
+
+# Package manager
+package-lock.json
+yarn.lock
+
+# Only include what's needed for the extension to run:
+# - out/ (compiled JavaScript)
+# - node_modules/markdown-it/ (runtime dependency)
+# - package.json
+# - README.md
+# - CHANGELOG.md
+# - LICENSE
+# - assets/icons/icon.png (marketplace icon)
+# - assets/media/ (tab icons)
+
+# Include assets folder for icons
+!assets/**

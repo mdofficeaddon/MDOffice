@@ -1,0 +1,268 @@
+{
+  "name": "md-office-editor",
+  "displayName": "Markdown Office Editor",
+  "description": "Transform VS Code into a powerful markdown editor with Office-like interface, WYSIWYG preview editing, rich formatting toolbar, find & replace, and PDF/HTML export",
+  "version": "0.2.1",
+  "publisher": "your-publisher-name",
+  "license": "MIT",
+  "icon": "assets/icons/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdofficeaddon/MDOffice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mdofficeaddon/MDOffice/issues"
+  },
+  "homepage": "https://github.com/mdofficeaddon/MDOffice#readme",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Formatters",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "markdown",
+    "md",
+    "editor",
+    "wysiwyg",
+    "office",
+    "word",
+    "preview",
+    "formatting",
+    "rich text",
+    "export",
+    "pdf",
+    "html",
+    "table",
+    "checklist",
+    "todo",
+    "focus mode",
+    "find and replace",
+    "search",
+    "visual editor"
+  ],
+  "activationEvents": [
+    "onCustomEditor:mdOfficeEditor.markdownEditor",
+    "onLanguage:markdown"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "mdOfficeEditor.markdownEditor",
+        "displayName": "Markdown Office Editor",
+        "selector": [
+          {
+            "filenamePattern": "*.md"
+          }
+        ],
+        "priority": "option",
+        "icon": {
+          "light": "assets/media/icon-tab-32.png",
+          "dark": "assets/media/icon-tab-32.png"
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "mdOfficeEditor.openEditor",
+        "title": "Open with Markdown Office Editor"
+      },
+      {
+        "command": "mdOfficeEditor.exportToPDF",
+        "title": "Export Markdown to PDF"
+      },
+      {
+        "command": "mdOfficeEditor.exportToHTML",
+        "title": "Export Markdown to HTML"
+      },
+      {
+        "command": "mdOfficeEditor.toggleView",
+        "title": "Toggle View Mode"
+      },
+      {
+        "command": "mdOfficeEditor.toggleFocusMode",
+        "title": "Toggle Focus Mode"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "mdOfficeEditor.toggleView",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "activeCustomEditorId == 'mdOfficeEditor.markdownEditor'"
+      },
+      {
+        "command": "mdOfficeEditor.toggleFocusMode",
+        "key": "f11",
+        "when": "activeCustomEditorId == 'mdOfficeEditor.markdownEditor'"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "mdOfficeEditor.openEditor",
+          "group": "navigation"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "when": "resourceLangId == markdown",
+          "command": "mdOfficeEditor.openEditor",
+          "group": "1_open"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Markdown Office Editor",
+      "properties": {
+        "mdOfficeEditor.pageMargins": {
+          "type": "number",
+          "default": 48,
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Page margins in pixels (96px = 1 inch at 96 DPI)"
+        },
+        "mdOfficeEditor.defaultViewMode": {
+          "type": "string",
+          "default": "split",
+          "enum": [
+            "split",
+            "editor",
+            "preview"
+          ],
+          "enumDescriptions": [
+            "Show editor and preview side-by-side",
+            "Show editor only",
+            "Show preview only"
+          ],
+          "description": "Default view mode when opening markdown files"
+        },
+        "mdOfficeEditor.fontSize": {
+          "type": "number",
+          "default": 11,
+          "minimum": 8,
+          "maximum": 24,
+          "description": "Font size in points"
+        },
+        "mdOfficeEditor.fontFamily": {
+          "type": "string",
+          "default": "Calibri",
+          "enum": [
+            "Calibri",
+            "Times New Roman",
+            "Arial",
+            "Georgia",
+            "Courier New"
+          ],
+          "description": "Font family for the document"
+        },
+        "mdOfficeEditor.lineHeight": {
+          "type": "number",
+          "default": 1.08,
+          "minimum": 1.0,
+          "maximum": 3.0,
+          "description": "Line height (1.0 = single spacing, 1.5 = 1.5 spacing, 2.0 = double spacing)"
+        },
+        "mdOfficeEditor.rememberViewMode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remember the last used view mode for each workspace"
+        },
+        "mdOfficeEditor.syncScroll": {
+          "type": "boolean",
+          "default": true,
+          "description": "Synchronize scrolling between editor and preview"
+        },
+        "mdOfficeEditor.documentTheme": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "light",
+            "dark"
+          ],
+          "enumDescriptions": [
+            "Match VS Code theme",
+            "Always use light theme",
+            "Always use dark theme"
+          ],
+          "description": "Document theme (background color)"
+        },
+        "mdOfficeEditor.wordCountGoal": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Word count goal (0 = disabled). Shows progress in status bar."
+        },
+        "mdOfficeEditor.showReadingTime": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show estimated reading time in status bar"
+        },
+        "mdOfficeEditor.export.paperSize": {
+          "type": "string",
+          "default": "Letter",
+          "enum": [
+            "Letter",
+            "A4",
+            "Legal"
+          ],
+          "description": "Paper size for PDF export"
+        },
+        "mdOfficeEditor.export.margins": {
+          "type": "number",
+          "default": 48,
+          "minimum": 0,
+          "maximum": 200,
+          "description": "Margins for PDF export in pixels (can differ from editor margins)"
+        },
+        "mdOfficeEditor.focusMode.hideToolbar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Hide toolbar in focus mode"
+        },
+        "mdOfficeEditor.focusMode.hideStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Hide status bar in focus mode"
+        },
+        "mdOfficeEditor.customCss": {
+          "type": "string",
+          "default": "",
+          "description": "Path to custom CSS file for styling the document"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "generate:icons": "scripts\\generate-all-icons.bat",
+    "prepackage": "npm run generate:icons",
+    "package": "vsce package --out dist/",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.75.0",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "markdown-it": "^13.0.0"
+  }
+}
+
