@@ -3,7 +3,7 @@
   "displayName": "Markdown Office Editor",
   "description": "Transform VS Code into a powerful markdown editor with Office-like interface, WYSIWYG preview editing, rich formatting toolbar, find & replace, and PDF/HTML export",
   "version": "0.2.1",
-  "publisher": "your-publisher-name",
+  "publisher": "06401f15-a30d-6a97-82a3-8ca0e379c4eb",
   "license": "MIT",
   "icon": "assets/icons/icon.png",
   "galleryBanner": {
@@ -248,7 +248,7 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
     "lint": "eslint src --ext ts",
-    "generate:icons": "scripts\\generate-all-icons.bat",
+    "generate:icons": "cmd.exe /c scripts\\generate-all-icons.bat",
     "prepackage": "npm run generate:icons",
     "package": "vsce package --out dist/",
     "publish": "vsce publish"

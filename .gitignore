@@ -55,6 +55,9 @@ coverage/
 # Production builds
 dist/
 
+# Keep public folder for static website
+!public/
+
 # Runtime data
 pids/
 *.pid
