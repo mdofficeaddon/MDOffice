@@ -5,6 +5,13 @@ All notable changes to the "Markdown Office Editor" extension will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2025-11-10
+
+### Fixed
+- Updated Marketplace badge links to use correct publisher ID
+- Fixed GitHub issues link in README
+- All marketplace links now point to the correct extension page
+
 ## [0.2.0] - 2025-11-10
 
 ### Added
