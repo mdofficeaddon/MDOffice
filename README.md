@@ -1,8 +1,8 @@
 # Markdown Office Editor
 
-[![Version](https://img.shields.io/visual-studio-marketplace/v/your-publisher-name.md-office-editor?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.md-office-editor)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/your-publisher-name.md-office-editor)](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.md-office-editor)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/your-publisher-name.md-office-editor)](https://marketplace.visualstudio.com/items?itemName=your-publisher-name.md-office-editor)
+[![Version](https://img.shields.io/visual-studio-marketplace/v/MDOffice.md-office-editor?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=MDOffice.md-office-editor)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/MDOffice.md-office-editor)](https://marketplace.visualstudio.com/items?itemName=MDOffice.md-office-editor)
+[![Rating](https://img.shields.io/visual-studio-marketplace/r/MDOffice.md-office-editor)](https://marketplace.visualstudio.com/items?itemName=MDOffice.md-office-editor)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![GitHub](https://img.shields.io/github/stars/mdofficeaddon/MDOffice?style=social)](https://github.com/mdofficeaddon/MDOffice)
 
@@ -381,7 +381,7 @@ Contributions are welcome! Whether it's bug reports, feature suggestions, or cod
 
 **Before contributing:**
 - Read the [Contributing Guidelines](CONTRIBUTING.md)
-- Check existing [issues](https://github.com/your-username/md-office-editor/issues)
+- Check existing [issues](https://github.com/mdofficeaddon/MDOffice/issues)
 - Follow the code style and testing guidelines
 
 **Ways to contribute:**

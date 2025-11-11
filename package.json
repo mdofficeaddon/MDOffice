@@ -2,8 +2,8 @@
   "name": "md-office-editor",
   "displayName": "Markdown Office Editor",
   "description": "Transform VS Code into a powerful markdown editor with Office-like interface, WYSIWYG preview editing, rich formatting toolbar, find & replace, and PDF/HTML export",
-  "version": "0.2.1",
-  "publisher": "06401f15-a30d-6a97-82a3-8ca0e379c4eb",
+  "version": "0.2.2",
+  "publisher": "MDOffice",
   "license": "MIT",
   "icon": "assets/icons/icon.png",
   "galleryBanner": {
