@@ -1,6 +1,6 @@
 # Development Scripts
 
-This directory contains helper scripts for setting up and developing the Markdown Office Editor extension on Windows.
+This directory contains helper scripts for setting up and developing the MDOffice - Markdown Office Editor extension on Windows.
 
 ## Available Scripts
 

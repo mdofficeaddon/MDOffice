@@ -1,6 +1,6 @@
 @echo off
 echo ============================================
-echo Markdown Office Editor - Requirements Check
+echo MDOffice - Markdown Office Editor - Requirements Check
 echo ============================================
 echo.
 

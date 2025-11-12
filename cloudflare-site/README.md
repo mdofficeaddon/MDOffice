@@ -1,6 +1,6 @@
-# Markdown Office Editor - Cloudflare Pages Deployment
+# MDOffice - Markdown Office Editor - Cloudflare Pages Deployment
 
-This folder contains everything you need to deploy the Markdown Office Editor landing page to Cloudflare Pages.
+This folder contains everything you need to deploy the MDOffice - Markdown Office Editor landing page to Cloudflare Pages.
 
 ## 🚀 Quick Deploy
 
@@ -71,4 +71,5 @@ To add a custom domain:
 ---
 
 **Ready to deploy?** Just drag and drop this folder to Cloudflare Pages! 🎉
+
 

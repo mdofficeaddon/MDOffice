@@ -1,6 +1,6 @@
 # Checklist Test Document
 
-This document demonstrates checklist (task list) support in the Markdown Office Editor.
+This document demonstrates checklist (task list) support in the MDOffice - Markdown Office Editor.
 
 ## Basic Checklists
 

@@ -1,6 +1,6 @@
 # Blockquotes Test Document
 
-This document demonstrates nested blockquote support in the Markdown Office Editor.
+This document demonstrates nested blockquote support in the MDOffice - Markdown Office Editor.
 
 ## Basic Blockquotes
 
