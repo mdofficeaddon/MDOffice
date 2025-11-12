@@ -85,7 +85,7 @@ if (Test-Path $contributingPath)
 {
     $content = Get-Content $contributingPath -Raw
     $content = $content -replace "^#\s+Contributing to.*", "# Contributing to $newDisplayName"
-    $content = $content -replace "Markdown Office Editor", "$newDisplayName"
+    $content = $content -replace "MDOffice - Markdown Office Editor", "$newDisplayName"
     Set-Content $contributingPath $content -NoNewline
     Write-Host "  ✓ CONTRIBUTING.md updated" -ForegroundColor Green
 } 
@@ -101,7 +101,7 @@ if (Test-Path "docs")
 {
     Get-ChildItem -Path "docs" -Filter "*.md" -Recurse | ForEach-Object {
         $content = Get-Content $_.FullName -Raw
-        $updated = $content -replace "Markdown Office Editor", "$newDisplayName"
+        $updated = $content -replace "MDOffice - Markdown Office Editor", "$newDisplayName"
         if ($content -ne $updated) 
         {
             Set-Content $_.FullName $updated -NoNewline

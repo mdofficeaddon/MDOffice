@@ -1,35 +1,57 @@
-# Edge Cases and Complex Nesting Test
+- # Edge Cases and Complex Nesting Test
 
 This document tests complex nesting, edge cases, and unusual markdown structures.
+
+test
+
+test
 
 ## Deeply Nested Lists
 
 1. Level 1 - First item
-2. - Level 2 - Bullet under first
+
+1. - Level 2 - Bullet under first
+
 - - Level 3 - Nested bullet
+
 - - Level 4 - Even deeper
+
 - - Level 5 - Very deep
+
 - - Level 6 - Maximum nesting?
+
 - - Level 7 - Still going
-3. - Level 2 - Back to bullets
+
+1. - Level 2 - Back to bullets
+
 - 1. Level 3 - Numbered list
-2. - Level 4 - Mixed types
+
+1. - Level 4 - Mixed types
+
 - 1. Level 5 - Numbered again
-2. - [ ] Level 6 - Task list
+
+1. - [ ] Level 6 - Task list
 
 1. Level 1 - Second item
-2. - [ ] Task item
-3. - [x] Completed task
+
+1. - [ ] Task item
+
+1. - [x] Completed task
+
 - - [ ] Nested task
+
 - - [x] Deeply nested completed
 
 ## Complex Mixed Lists
 
 - **Bold item** with *italic* and `code`
+
 - 1. Numbered sub-item with ~~strikethrough~~
-2. - [x] Completed task with [link](https://example.com)
+
+1. - [x] Completed task with [link](https://example.com)
 
        > And a blockquote!
+
 - Another level with **formatting**
 
 - Item with multiple paragraphs
@@ -39,16 +61,20 @@ This document tests complex nesting, edge cases, and unusual markdown structures
   
   Third paragraph in list item.
   
+
 - Item with code block:
 
   
   
+
 ```
+
 javascript
   function nested() {
       return "code in list";
   }
   
+
 ```
 
 ## Nested Blockquotes
@@ -91,44 +117,57 @@ javascript
    > Blockquote inside list item
    > With multiple lines
    
+
 1. Second item
 
    
    > Another blockquote
    > > With nesting!
+
 ## Code Blocks in Lists
 
 1. Install the package:
 
    
    
+
 ```
+
 bash
    npm install package-name
    
+
 ```
 
    
+
 1. Import it in your code:
 
    
    
+
 ```
+
 javascript
    import { something } from 'package-name';
    
+
 ```
 
    
+
 1. Use it:
 
    
    
+
 ```
+
 javascript
    const result = something();
    console.log(result);
    
+
 ```
 
 ## Tables with Complex Content
@@ -149,6 +188,7 @@ Empty list item:
 - Item after empty
 
 -
+
 - Another empty edge
 
 Empty code block:
@@ -166,15 +206,19 @@ Empty blockquote:
 ---
 
 ***
-__**
-
+_*****
 *
 ---
 
 ## Headers with Formatting
 
-*****# ***Header with **bold** and *italic* and `code`*
+*****# ***Header with **bold** and *italic* and `code`******
 
+*
+*
+*
+*
+*
 *
 ## Header with [link](https://example.com) inside
 
@@ -185,7 +229,6 @@ __**
 ##### Header with emoji 🚀 and symbols
 
 *###### *All **formatting** *types* `together` [link](url) ~~strike~~ $x$*
-
 *
 ## Alternative Header Syntax
 
@@ -230,11 +273,16 @@ This is HTML content mixed with **markdown formatting**.
 <details>
 <summary>Click to expand</summary>
 
-](https://via.placeholder.com/150)*[*Hidden content here with *markdown* support.*
-
+**](https://via.placeholder.com/150)*[*Hidden content here with *markdown* support.****
 *
+*
+*
+*
+*
+
 - List item 1
 
+*
 - List item 2
 
 </details>
@@ -268,14 +316,18 @@ Another sentence with another footnote.[^note]
 *](https://via.placeholder.com/150)*- [
 ](https://via.placeholder.com/150)
 - [x] [ Task with ](https://via.placeholder.com/150)[link](https://example.com)
+
 - - [ ] Nested task
+
 - - [x] Completed nested task
+
 - - [ ] Even deeper nesting
 
 - [ ] Task with multiple lines
 
   that continues here
   and here too
+
 ## Emphasis Edge Cases
 
 **bold text with *italic* inside**
@@ -284,21 +336,18 @@ Another sentence with another footnote.[^note]
 **bold with `code` inside**
 *italic with [link](url) inside*
 ~~strikethrough with **bold** inside~~
-## Mixed Line Breaks
+*
+## *Mixed Line Breaks*
 
+*
 Line 1  
 Line 2 with two spaces
-
 Line 3
-
 Line 4 with blank line above
-
 Line 5<br>Line 6 with HTML break
-
 ## Very Long Lines
 
 **This is a very long line that might cause wrapping issues depending on the renderer settings and viewport width. It contains **bold text**, *italic text*, `code snippets`, [links](https://example.com), and continues for quite a while to test how the renderer handles extremely long content that doesn't have natural break points and might need to wrap at unusual places or cause horizontal scrolling in some viewers.*
-
 *
 ## Special Link Cases
 
@@ -311,7 +360,6 @@ Line 5<br>Line 6 with HTML break
 
 **Bold***Italic*`Code` all adjacent
 **No space: **bold***italic*~~strike~~*
-
 *
 ## Malformed or Edge Syntax
 
@@ -321,9 +369,35 @@ Line 5<br>Line 6 with HTML break
 
 Mismatched **bold ending*
 
-Empty: **** and _* and ```**
+**Empty: **** and ** and 
 
+```
+
+**
 **`
-`*``*```**Single: * and * and `
+`**
+**
 
+```
+
+**
+****```
+`**Single: * and * and *`*
 *
+- 
+
+-
+
+- [ ]
+
+- [ ] 
+
+- [ ]
+
+1.
+
+- 
+
+-
+- [ ] 
+# 1. ****

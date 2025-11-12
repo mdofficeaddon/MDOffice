@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Markdown Office Editor now supports **full editing capabilities in Preview mode**! You can edit your documents directly in the rendered preview view with all formatting features available.
+The MDOffice - Markdown Office Editor now supports **full editing capabilities in Preview mode**! You can edit your documents directly in the rendered preview view with all formatting features available.
 
 ## Key Features
 

@@ -1,6 +1,6 @@
-# Welcome to Markdown Office Editor!
+# Welcome to MDOffice - Markdown Office Editor!
 
-This is a sample markdown file to test the **Markdown Office Editor** extension.
+This is a sample markdown file to test the **MDOffice - Markdown Office Editor** extension.
 
 ## Features Demo
 

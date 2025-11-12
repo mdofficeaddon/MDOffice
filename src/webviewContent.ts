@@ -25,7 +25,7 @@ export function getWebviewContent(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
-    <title>Markdown Office Editor</title>
+    <title>MDOffice - Markdown Office Editor</title>
     <style>
         * {
             box-sizing: border-box;
@@ -268,6 +268,7 @@ export function getWebviewContent(
             padding: 12px;
             tab-size: 4;
             box-sizing: border-box;
+            box-shadow: none;
         }
 
         #editor::placeholder {
@@ -277,6 +278,8 @@ export function getWebviewContent(
 
         #editor:focus {
             outline: none; /* Clean focus, no blue border */
+            box-shadow: none;
+            border: none;
         }
 
         .preview-wrapper {
@@ -310,8 +313,9 @@ export function getWebviewContent(
         }
 
         #preview[contenteditable="true"]:focus {
-            outline: 2px solid var(--vscode-focusBorder, #007acc);
-            outline-offset: -2px;
+            outline: none;
+            box-shadow: none;
+            border: none;
         }
 
         #preview h1, #preview h2, #preview h3, #preview h4, #preview h5, #preview h6 {
@@ -897,8 +901,8 @@ export function getWebviewContent(
         <div class="toolbar-group view-selector">
             <select id="view-mode">
                 <option value="split">Split View</option>
-                <option value="editor">Editor Only</option>
-                <option value="preview">Preview Only</option>
+                <option value="editor">Editor View</option>
+                <option value="preview">Office View</option>
             </select>
         </div>
     </div>
@@ -955,7 +959,7 @@ export function getWebviewContent(
             <span id="reading-time" style="margin-left: 12px;"></span>
             <span class="autosave-indicator" id="autosave-indicator"></span>
         </div>
-        <div id="status-right">Markdown Office Editor</div>
+        <div id="status-right">MDOffice - Markdown Office Editor</div>
     </div>
 
     <script nonce="${nonce}">
@@ -1154,10 +1158,11 @@ export function getWebviewContent(
             // Images
             html = html.replace(/!\\[([^\\]]*)\\]\\(([^\\)]+)\\)/g, '<img src="$2" alt="$1">');
 
-            // Process lists (unordered, ordered, and task lists) with nesting support
+            // Process lists (unordered, ordered, and task lists) with proper nesting support
             const listLines = html.split('\\n');
             let processedListLines = [];
-            let listStack = []; // Stack to track nested lists: {type: 'ul'|'ol'|'task', level: number}
+            let listStack = []; // Stack to track nested lists: {type: 'ul'|'ol'|'task', level: number, hasContent: boolean}
+            let lastItemIndices = []; // Track last <li> index for each level
             
             for (let i = 0; i < listLines.length; i++) {
                 const line = listLines[i];
@@ -1170,18 +1175,34 @@ export function getWebviewContent(
                     const checked = taskMatch[2].toLowerCase() === 'x';
                     const text = taskMatch[3];
                     
-                    // Handle nesting
+                    // Close lists deeper than current level
                     while (listStack.length > 0 && listStack[listStack.length - 1].level >= level) {
-                        const list = listStack.pop();
-                        processedListLines.push(\`</\${list.type === 'task' ? 'ul' : list.type}>\`);
+                        const closingList = listStack.pop();
+                        lastItemIndices.pop();
+                        processedListLines.push(\`</\${closingList.type === 'task' ? 'ul' : closingList.type}>\`);
+                        // If there was a parent list item, close it
+                        if (listStack.length > 0 && closingList.hasContent) {
+                            processedListLines.push('</li>');
+                        }
                     }
                     
+                    // Open new list if needed (going deeper)
                     if (listStack.length === 0 || listStack[listStack.length - 1].level < level) {
+                        // If we have a parent, we need to nest inside the last <li>
+                        if (lastItemIndices.length > 0) {
+                            // Remove the closing </li> from the parent item
+                            const lastIdx = lastItemIndices[lastItemIndices.length - 1];
+                            if (processedListLines[lastIdx] && processedListLines[lastIdx].endsWith('</li>')) {
+                                processedListLines[lastIdx] = processedListLines[lastIdx].replace(/<\\/li>$/, '');
+                                listStack[listStack.length - 1].hasContent = true;
+                            }
+                        }
                         processedListLines.push('<ul class="task-list">');
-                        listStack.push({type: 'task', level: level});
+                        listStack.push({type: 'task', level: level, hasContent: false});
                     }
                     
-                    // Add data attributes to track line number and indentation for editing
+                    // Add list item
+                    lastItemIndices[listStack.length - 1] = processedListLines.length;
                     processedListLines.push(\`<li class="task-list-item" data-line="\${i}" data-indent="\${indent}"><input type="checkbox" \${checked ? 'checked' : ''}> \${text}</li>\`);
                     continue;
                 }
@@ -1191,17 +1212,34 @@ export function getWebviewContent(
                 if (ulMatch) {
                     const text = ulMatch[2];
                     
-                    // Handle nesting
+                    // Close lists deeper than current level
                     while (listStack.length > 0 && listStack[listStack.length - 1].level >= level) {
-                        const list = listStack.pop();
-                        processedListLines.push(\`</\${list.type === 'task' ? 'ul' : list.type}>\`);
+                        const closingList = listStack.pop();
+                        lastItemIndices.pop();
+                        processedListLines.push(\`</\${closingList.type === 'task' ? 'ul' : closingList.type}>\`);
+                        // If there was a parent list item, close it
+                        if (listStack.length > 0 && closingList.hasContent) {
+                            processedListLines.push('</li>');
+                        }
                     }
                     
+                    // Open new list if needed (going deeper)
                     if (listStack.length === 0 || listStack[listStack.length - 1].level < level) {
+                        // If we have a parent, we need to nest inside the last <li>
+                        if (lastItemIndices.length > 0) {
+                            // Remove the closing </li> from the parent item
+                            const lastIdx = lastItemIndices[lastItemIndices.length - 1];
+                            if (processedListLines[lastIdx] && processedListLines[lastIdx].endsWith('</li>')) {
+                                processedListLines[lastIdx] = processedListLines[lastIdx].replace(/<\\/li>$/, '');
+                                listStack[listStack.length - 1].hasContent = true;
+                            }
+                        }
                         processedListLines.push('<ul>');
-                        listStack.push({type: 'ul', level: level});
+                        listStack.push({type: 'ul', level: level, hasContent: false});
                     }
                     
+                    // Add list item
+                    lastItemIndices[listStack.length - 1] = processedListLines.length;
                     processedListLines.push(\`<li>\${text}</li>\`);
                     continue;
                 }
@@ -1211,25 +1249,47 @@ export function getWebviewContent(
                 if (olMatch) {
                     const text = olMatch[2];
                     
-                    // Handle nesting
+                    // Close lists deeper than current level
                     while (listStack.length > 0 && listStack[listStack.length - 1].level >= level) {
-                        const list = listStack.pop();
-                        processedListLines.push(\`</\${list.type === 'task' ? 'ul' : list.type}>\`);
+                        const closingList = listStack.pop();
+                        lastItemIndices.pop();
+                        processedListLines.push(\`</\${closingList.type === 'task' ? 'ul' : closingList.type}>\`);
+                        // If there was a parent list item, close it
+                        if (listStack.length > 0 && closingList.hasContent) {
+                            processedListLines.push('</li>');
+                        }
                     }
                     
+                    // Open new list if needed (going deeper)
                     if (listStack.length === 0 || listStack[listStack.length - 1].level < level) {
+                        // If we have a parent, we need to nest inside the last <li>
+                        if (lastItemIndices.length > 0) {
+                            // Remove the closing </li> from the parent item
+                            const lastIdx = lastItemIndices[lastItemIndices.length - 1];
+                            if (processedListLines[lastIdx] && processedListLines[lastIdx].endsWith('</li>')) {
+                                processedListLines[lastIdx] = processedListLines[lastIdx].replace(/<\\/li>$/, '');
+                                listStack[listStack.length - 1].hasContent = true;
+                            }
+                        }
                         processedListLines.push('<ol>');
-                        listStack.push({type: 'ol', level: level});
+                        listStack.push({type: 'ol', level: level, hasContent: false});
                     }
                     
+                    // Add list item
+                    lastItemIndices[listStack.length - 1] = processedListLines.length;
                     processedListLines.push(\`<li>\${text}</li>\`);
                     continue;
                 }
                 
                 // Not a list item - close all open lists
                 while (listStack.length > 0) {
-                    const list = listStack.pop();
-                    processedListLines.push(\`</\${list.type === 'task' ? 'ul' : list.type}>\`);
+                    const closingList = listStack.pop();
+                    lastItemIndices.pop();
+                    processedListLines.push(\`</\${closingList.type === 'task' ? 'ul' : closingList.type}>\`);
+                    // If there was a parent list item, close it
+                    if (listStack.length > 0 && closingList.hasContent) {
+                        processedListLines.push('</li>');
+                    }
                 }
                 
                 processedListLines.push(line);
@@ -1237,8 +1297,13 @@ export function getWebviewContent(
             
             // Close any remaining open lists
             while (listStack.length > 0) {
-                const list = listStack.pop();
-                processedListLines.push(\`</\${list.type === 'task' ? 'ul' : list.type}>\`);
+                const closingList = listStack.pop();
+                lastItemIndices.pop();
+                processedListLines.push(\`</\${closingList.type === 'task' ? 'ul' : closingList.type}>\`);
+                // If there was a parent list item, close it
+                if (listStack.length > 0 && closingList.hasContent) {
+                    processedListLines.push('</li>');
+                }
             }
             
             html = processedListLines.join('\\n');
@@ -1308,7 +1373,7 @@ export function getWebviewContent(
             temp.innerHTML = html;
             
             // Convert HTML elements to markdown recursively
-            function nodeToMarkdown(node) {
+            function nodeToMarkdown(node, indentLevel = 0) {
                 if (node.nodeType === Node.TEXT_NODE) {
                     return node.textContent || '';
                 }
@@ -1325,62 +1390,126 @@ export function getWebviewContent(
                 // For table-wrapper, just process the table inside
                 if (node.classList && node.classList.contains('table-wrapper')) {
                     const table = node.querySelector('table');
-                    return table ? nodeToMarkdown(table) : '';
+                    return table ? nodeToMarkdown(table, indentLevel) : '';
                 }
                 
                 const tag = node.tagName.toLowerCase();
-                const children = Array.from(node.childNodes).map(nodeToMarkdown).join('');
+                const indent = '  '.repeat(indentLevel); // 2 spaces per level
                 
                 switch (tag) {
-                    case 'h1': return '# ' + children + '\\n\\n';
-                    case 'h2': return '## ' + children + '\\n\\n';
-                    case 'h3': return '### ' + children + '\\n\\n';
-                    case 'h4': return '#### ' + children + '\\n\\n';
-                    case 'h5': return '##### ' + children + '\\n\\n';
-                    case 'h6': return '###### ' + children + '\\n\\n';
-                    case 'p': return children + '\\n\\n';
+                    case 'h1': 
+                        const h1Children = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '# ' + h1Children + '\\n\\n';
+                    case 'h2': 
+                        const h2Children = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '## ' + h2Children + '\\n\\n';
+                    case 'h3': 
+                        const h3Children = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '### ' + h3Children + '\\n\\n';
+                    case 'h4': 
+                        const h4Children = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '#### ' + h4Children + '\\n\\n';
+                    case 'h5': 
+                        const h5Children = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '##### ' + h5Children + '\\n\\n';
+                    case 'h6': 
+                        const h6Children = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '###### ' + h6Children + '\\n\\n';
+                    case 'p': 
+                        const pChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return pChildren + '\\n\\n';
                     case 'br': return '\\n';
-                    case 'strong': case 'b': return '**' + children + '**';
-                    case 'em': case 'i': return '*' + children + '*';
-                    case 'del': case 's': return '~~' + children + '~~';
+                    case 'strong': case 'b': 
+                        const strongChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '**' + strongChildren + '**';
+                    case 'em': case 'i': 
+                        const emChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '*' + emChildren + '*';
+                    case 'del': case 's': 
+                        const delChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '~~' + delChildren + '~~';
                     case 'code': 
                         // Check if it's inside a pre (code block)
                         if (node.parentElement && node.parentElement.tagName.toLowerCase() === 'pre') {
-                            return children;
+                            return Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
                         }
-                        return '\`' + children + '\`';
+                        const codeChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '\`' + codeChildren + '\`';
                     case 'pre': 
-                        return '\\n\`\`\`\\n' + children + '\\n\`\`\`\\n\\n';
+                        const preChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '\\n\`\`\`\\n' + preChildren + '\\n\`\`\`\\n\\n';
                     case 'a': 
                         const href = node.getAttribute('href') || '';
-                        return '[' + children + '](' + href + ')';
+                        const aChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return '[' + aChildren + '](' + href + ')';
                     case 'img':
                         const src = node.getAttribute('src') || '';
                         const alt = node.getAttribute('alt') || '';
                         return '![' + alt + '](' + src + ')';
                     case 'ul':
+                        const isTaskList = node.classList && node.classList.contains('task-list');
                         return Array.from(node.children).map((li, idx) => {
-                            const content = nodeToMarkdown(li).trim();
+                            // Process list item content, but handle nested lists specially
+                            let liContent = '';
+                            let nestedList = '';
+                            
+                            // Separate direct content from nested lists
+                            Array.from(li.childNodes).forEach(child => {
+                                if (child.nodeType === Node.ELEMENT_NODE && 
+                                    (child.tagName.toLowerCase() === 'ul' || child.tagName.toLowerCase() === 'ol')) {
+                                    // This is a nested list - process it with increased indent
+                                    nestedList += nodeToMarkdown(child, indentLevel + 1);
+                                } else {
+                                    liContent += nodeToMarkdown(child, indentLevel);
+                                }
+                            });
+                            
+                            liContent = liContent.trim();
+                            
                             // Check for task list
                             if (li.classList && li.classList.contains('task-list-item')) {
                                 const checkbox = li.querySelector('input[type="checkbox"]');
                                 const checked = checkbox && checkbox.checked ? 'x' : ' ';
                                 const text = Array.from(li.childNodes)
-                                    .filter(n => n.nodeType === Node.TEXT_NODE || (n.nodeType === Node.ELEMENT_NODE && n.tagName.toLowerCase() !== 'input'))
-                                    .map(nodeToMarkdown).join('');
-                                return '- [' + checked + '] ' + text.trim();
+                                    .filter(n => n.nodeType === Node.TEXT_NODE || 
+                                            (n.nodeType === Node.ELEMENT_NODE && 
+                                             n.tagName.toLowerCase() !== 'input' &&
+                                             n.tagName.toLowerCase() !== 'ul' &&
+                                             n.tagName.toLowerCase() !== 'ol'))
+                                    .map(n => nodeToMarkdown(n, indentLevel)).join('').trim();
+                                const result = indent + '- [' + checked + '] ' + text;
+                                return nestedList ? result + '\\n' + nestedList.trimEnd() : result;
                             }
-                            return '- ' + content;
+                            const result = indent + '- ' + liContent;
+                            return nestedList ? result + '\\n' + nestedList.trimEnd() : result;
                         }).join('\\n') + '\\n\\n';
                     case 'ol':
                         return Array.from(node.children).map((li, idx) => {
-                            const content = nodeToMarkdown(li).trim();
-                            return (idx + 1) + '. ' + content;
+                            // Process list item content, but handle nested lists specially
+                            let liContent = '';
+                            let nestedList = '';
+                            
+                            // Separate direct content from nested lists
+                            Array.from(li.childNodes).forEach(child => {
+                                if (child.nodeType === Node.ELEMENT_NODE && 
+                                    (child.tagName.toLowerCase() === 'ul' || child.tagName.toLowerCase() === 'ol')) {
+                                    // This is a nested list - process it with increased indent
+                                    nestedList += nodeToMarkdown(child, indentLevel + 1);
+                                } else {
+                                    liContent += nodeToMarkdown(child, indentLevel);
+                                }
+                            });
+                            
+                            liContent = liContent.trim();
+                            const result = indent + (idx + 1) + '. ' + liContent;
+                            return nestedList ? result + '\\n' + nestedList.trimEnd() : result;
                         }).join('\\n') + '\\n\\n';
                     case 'li':
-                        return children;
+                        // Li content is handled by ul/ol
+                        return Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
                     case 'blockquote':
-                        return children.split('\\n').map(line => line ? '> ' + line : '').join('\\n') + '\\n\\n';
+                        const bqChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return bqChildren.split('\\n').map(line => line ? '> ' + line : '').join('\\n') + '\\n\\n';
                     case 'hr':
                         return '---\\n\\n';
                     case 'table':
@@ -1388,21 +1517,23 @@ export function getWebviewContent(
                         if (rows.length === 0) return '';
                         
                         const headerRow = rows[0];
-                        const headers = Array.from(headerRow.querySelectorAll('th, td')).map(cell => nodeToMarkdown(cell).trim());
+                        const headers = Array.from(headerRow.querySelectorAll('th, td')).map(cell => nodeToMarkdown(cell, indentLevel).trim());
                         const separator = headers.map(() => '---');
                         
                         let markdown = '| ' + headers.join(' | ') + ' |\\n';
                         markdown += '| ' + separator.join(' | ') + ' |\\n';
                         
                         for (let i = 1; i < rows.length; i++) {
-                            const cells = Array.from(rows[i].querySelectorAll('td')).map(cell => nodeToMarkdown(cell).trim());
+                            const cells = Array.from(rows[i].querySelectorAll('td')).map(cell => nodeToMarkdown(cell, indentLevel).trim());
                             markdown += '| ' + cells.join(' | ') + ' |\\n';
                         }
                         return markdown + '\\n';
                     case 'div':
-                        return children;
+                        const divChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return divChildren;
                     default:
-                        return children;
+                        const defaultChildren = Array.from(node.childNodes).map(n => nodeToMarkdown(n, indentLevel)).join('');
+                        return defaultChildren;
                 }
             }
             
@@ -1605,8 +1736,8 @@ export function getWebviewContent(
         }
 
         function insertAtCursor(before, after = '') {
-            // Check if we're in preview-only mode (contenteditable preview)
-            if (preview.contentEditable === 'true' && viewMode.value === 'preview') {
+            // Check if preview is contenteditable and has focus
+            if (preview.contentEditable === 'true' && document.activeElement === preview) {
                 insertIntoContentEditable(before, after);
             } else {
                 // Normal textarea editing
@@ -1894,9 +2025,9 @@ export function getWebviewContent(
         const MAX_UNDO_STACK = 50;
         
         function saveUndoState() {
-            // Save current state (preview HTML or editor text depending on mode)
+            // Save current state (preview HTML or editor text depending on focus)
             let currentState;
-            if (preview.contentEditable === 'true' && viewMode.value === 'preview') {
+            if (preview.contentEditable === 'true' && document.activeElement === preview) {
                 currentState = preview.innerHTML;
             } else {
                 currentState = editor.value;
@@ -1915,8 +2046,8 @@ export function getWebviewContent(
         }
 
         function wrapSelection(before, after) {
-            // Check if we're in preview mode with contenteditable
-            if (preview.contentEditable === 'true' && viewMode.value === 'preview') {
+            // Check if preview has focus and is contenteditable
+            if (preview.contentEditable === 'true' && document.activeElement === preview) {
                 saveUndoState(); // Save state for undo/redo
                 toggleContentEditableFormatting(before, after);
             } else {
@@ -2028,19 +2159,325 @@ export function getWebviewContent(
             });
         }
 
-        // Toolbar button handlers
-        document.getElementById('btn-bold').addEventListener('click', () => wrapSelection('**', '**'));
-        document.getElementById('btn-italic').addEventListener('click', () => wrapSelection('*', '*'));
-        document.getElementById('btn-strikethrough').addEventListener('click', () => wrapSelection('~~', '~~'));
-        document.getElementById('btn-code').addEventListener('click', () => wrapSelection('\`', '\`'));
+        function convertToList(listType) {
+            saveUndoState(); // Save state for undo
+            
+            if (preview.contentEditable === 'true' && document.activeElement === preview) {
+                // Preview mode - convert selection or current line to list
+                const selection = window.getSelection();
+                if (!selection || selection.rangeCount === 0) {
+                    // No selection - insert new list at end
+                    const listElement = document.createElement(listType === 'task' ? 'ul' : listType);
+                    if (listType === 'task') {
+                        listElement.className = 'task-list';
+                    }
+                    
+                    const li = document.createElement('li');
+                    if (listType === 'task') {
+                        li.className = 'task-list-item';
+                        const checkbox = document.createElement('input');
+                        checkbox.type = 'checkbox';
+                        li.appendChild(checkbox);
+                        li.appendChild(document.createTextNode(' List item'));
+                    } else {
+                        li.textContent = 'List item';
+                    }
+                    listElement.appendChild(li);
+                    preview.appendChild(listElement);
+                    
+                    // Place cursor in the list item
+                    const newRange = document.createRange();
+                    if (listType === 'task') {
+                        // Place cursor after checkbox
+                        const textNode = li.childNodes[1];
+                        newRange.setStart(textNode, 1);
+                        newRange.collapse(true);
+                    } else {
+                        newRange.selectNodeContents(li);
+                        newRange.collapse(false);
+                    }
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                    
+                    syncPreviewToEditor();
+                    preview.focus();
+                    return;
+                }
+                
+                const range = selection.getRangeAt(0);
+                const selectedText = range.toString();
+                
+                if (selectedText) {
+                    // Convert selected text lines to list
+                    const lines = selectedText.split('\\n').filter(line => line.trim());
+                    const listElement = document.createElement(listType === 'task' ? 'ul' : listType);
+                    if (listType === 'task') {
+                        listElement.className = 'task-list';
+                    }
+                    
+                    lines.forEach((line, index) => {
+                        const li = document.createElement('li');
+                        if (listType === 'task') {
+                            li.className = 'task-list-item';
+                            const checkbox = document.createElement('input');
+                            checkbox.type = 'checkbox';
+                            li.appendChild(checkbox);
+                            li.appendChild(document.createTextNode(' ' + line.trim()));
+                        } else {
+                            li.textContent = line.trim();
+                        }
+                        listElement.appendChild(li);
+                    });
+                    
+                    range.deleteContents();
+                    range.insertNode(listElement);
+                    
+                    // Move cursor after list
+                    const newRange = document.createRange();
+                    newRange.setStartAfter(listElement);
+                    newRange.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                    
+                    syncPreviewToEditor();
+                } else {
+                    // Insert new list item
+                    const listMarkers = {
+                        'ul': '\\n- ',
+                        'ol': '\\n1. ',
+                        'task': '\\n- [ ] '
+                    };
+                    insertText(listMarkers[listType]);
+                }
+            } else {
+                // Editor mode - convert selected lines to list
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                const text = editor.value;
+                
+                if (start !== end) {
+                    // Convert selected text to list
+                    const selectedText = text.substring(start, end);
+                    const lines = selectedText.split('\\n');
+                    
+                    let convertedText;
+                    if (listType === 'ul') {
+                        convertedText = lines.map(line => line.trim() ? '- ' + line.trim() : '').join('\\n');
+                    } else if (listType === 'ol') {
+                        let num = 1;
+                        convertedText = lines.map(line => line.trim() ? (num++) + '. ' + line.trim() : '').join('\\n');
+                    } else { // task
+                        convertedText = lines.map(line => line.trim() ? '- [ ] ' + line.trim() : '').join('\\n');
+                    }
+                    
+                    const newText = text.substring(0, start) + convertedText + text.substring(end);
+                    editor.value = newText;
+                    editor.selectionStart = start;
+                    editor.selectionEnd = start + convertedText.length;
+                    editor.focus();
+                    
+                    updatePreview();
+                    notifyChange();
+                } else {
+                    // Insert new list item
+                    const listMarkers = {
+                        'ul': '\\n- ',
+                        'ol': '\\n1. ',
+                        'task': '\\n- [ ] '
+                    };
+                    insertText(listMarkers[listType]);
+                }
+            }
+        }
 
-        document.getElementById('btn-h1').addEventListener('click', () => insertText('# '));
-        document.getElementById('btn-h2').addEventListener('click', () => insertText('## '));
-        document.getElementById('btn-h3').addEventListener('click', () => insertText('### '));
+        function applyHeadingStyle(headingLevel) {
+            saveUndoState(); // Save state for undo
+            
+            if (preview.contentEditable === 'true' && document.activeElement === preview) {
+                // Preview mode - convert current block to heading
+                const selection = window.getSelection();
+                if (!selection || selection.rangeCount === 0) {
+                    // No selection - insert new heading at end
+                    const newHeading = document.createElement(headingLevel);
+                    newHeading.textContent = 'Heading';
+                    preview.appendChild(newHeading);
+                    
+                    // Place cursor in the heading
+                    const newRange = document.createRange();
+                    newRange.selectNodeContents(newHeading);
+                    newRange.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                    
+                    syncPreviewToEditor();
+                    preview.focus();
+                    return;
+                }
+                
+                const range = selection.getRangeAt(0);
+                let node = range.commonAncestorContainer;
+                if (node.nodeType === Node.TEXT_NODE) {
+                    node = node.parentElement;
+                }
+                
+                // Find the closest block element (p, h1-h6, div, etc.)
+                while (node && node !== preview && 
+                       !['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'DIV', 'LI'].includes(node.tagName)) {
+                    node = node.parentElement;
+                }
+                
+                if (node && node !== preview && node.tagName !== 'LI') {
+                    // Create new heading element
+                    const newHeading = document.createElement(headingLevel);
+                    newHeading.textContent = node.textContent;
+                    node.parentNode.replaceChild(newHeading, node);
+                    
+                    // Place cursor at end of new heading
+                    const newRange = document.createRange();
+                    newRange.selectNodeContents(newHeading);
+                    newRange.collapse(false);
+                    selection.removeAllRanges();
+                    selection.addRange(newRange);
+                    
+                    syncPreviewToEditor();
+                }
+            } else {
+                // Editor mode - apply heading markdown to current line
+                const start = editor.selectionStart;
+                const text = editor.value;
+                
+                // Find start of current line
+                let lineStart = start;
+                while (lineStart > 0 && text[lineStart - 1] !== '\\n') {
+                    lineStart--;
+                }
+                
+                // Find end of current line
+                let lineEnd = start;
+                while (lineEnd < text.length && text[lineEnd] !== '\\n') {
+                    lineEnd++;
+                }
+                
+                const currentLine = text.substring(lineStart, lineEnd);
+                
+                // Remove existing heading markers if any
+                const cleanLine = currentLine.replace(/^#{1,6}\\s*/, '');
+                
+                // Add new heading marker
+                const headingMarkers = {'h1': '# ', 'h2': '## ', 'h3': '### '};
+                const newLine = headingMarkers[headingLevel] + cleanLine;
+                
+                // Replace the line
+                const newText = text.substring(0, lineStart) + newLine + text.substring(lineEnd);
+                editor.value = newText;
+                
+                // Set cursor at end of line
+                const newCursorPos = lineStart + newLine.length;
+                editor.selectionStart = newCursorPos;
+                editor.selectionEnd = newCursorPos;
+                editor.focus();
+                
+                updatePreview();
+                notifyChange();
+            }
+        }
+
+        // Toolbar button handlers with proper error handling and focus management
+        document.getElementById('btn-bold').addEventListener('click', () => {
+            try {
+                wrapSelection('**', '**');
+                // Restore focus to appropriate editor
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Bold button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-italic').addEventListener('click', () => {
+            try {
+                wrapSelection('*', '*');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Italic button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-strikethrough').addEventListener('click', () => {
+            try {
+                wrapSelection('~~', '~~');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Strikethrough button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-code').addEventListener('click', () => {
+            try {
+                wrapSelection('\`', '\`');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Code button error:', e);
+            }
+        });
+
+        document.getElementById('btn-h1').addEventListener('click', () => {
+            try {
+                applyHeadingStyle('h1');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('H1 button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-h2').addEventListener('click', () => {
+            try {
+                applyHeadingStyle('h2');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('H2 button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-h3').addEventListener('click', () => {
+            try {
+                applyHeadingStyle('h3');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('H3 button error:', e);
+            }
+        });
         
         document.getElementById('btn-normal').addEventListener('click', () => {
             // Convert current block to normal paragraph
-            if (preview.contentEditable === 'true' && viewMode.value === 'preview') {
+            if (preview.contentEditable === 'true' && document.activeElement === preview) {
                 const selection = window.getSelection();
                 if (!selection || selection.rangeCount === 0) return;
                 
@@ -2077,9 +2514,44 @@ export function getWebviewContent(
             }
         });
 
-        document.getElementById('btn-ul').addEventListener('click', () => insertText('\\n- '));
-        document.getElementById('btn-ol').addEventListener('click', () => insertText('\\n1. '));
-        document.getElementById('btn-task').addEventListener('click', () => insertText('\\n- [ ] '));
+        document.getElementById('btn-ul').addEventListener('click', () => {
+            try {
+                convertToList('ul');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Bullet list button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-ol').addEventListener('click', () => {
+            try {
+                convertToList('ol');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Numbered list button error:', e);
+            }
+        });
+        
+        document.getElementById('btn-task').addEventListener('click', () => {
+            try {
+                convertToList('task');
+                if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                    preview.focus();
+                } else {
+                    editor.focus();
+                }
+            } catch (e) {
+                console.error('Task list button error:', e);
+            }
+        });
 
         document.getElementById('btn-link').addEventListener('click', () => {
             const url = prompt('Enter URL:');
@@ -2162,8 +2634,8 @@ export function getWebviewContent(
                 container.classList.remove('preview-only');
                 // Update preview when switching to split view
                 updatePreview();
-                // Disable preview editing in split view
-                preview.contentEditable = 'false';
+                // Enable preview editing in split view for better user experience
+                preview.contentEditable = 'true';
                 // Remove wider view for split pane
                 document.body.classList.remove('single-pane-view');
             }
@@ -2708,15 +3180,15 @@ export function getWebviewContent(
 
         // Preview input handler for contenteditable mode
         preview.addEventListener('input', () => {
-            // Only sync if preview is editable (preview-only mode)
-            if (preview.contentEditable === 'true' && viewMode.value === 'preview') {
+            // Sync if preview is editable (in preview-only or split mode)
+            if (preview.contentEditable === 'true') {
                 // Debounce the sync to avoid performance issues and cursor jumping
                 clearTimeout(previewSyncTimeout);
                 previewSyncTimeout = setTimeout(() => {
                     syncPreviewToEditor();
-                }, 1000); // Increased to 1 second for smoother editing
+                }, 300); // Reduced to 300ms for faster sync
                 
-                // Debounced undo state saving (save every 2 seconds of inactivity)
+                // Debounced undo state saving (save every 1 second of inactivity)
                 clearTimeout(undoSaveTimeout);
                 undoSaveTimeout = setTimeout(() => {
                     const currentState = preview.innerHTML;
@@ -2725,7 +3197,7 @@ export function getWebviewContent(
                         saveUndoState();
                         lastSavedState = currentState;
                     }
-                }, 2000);
+                }, 1000);
             }
         });
 
@@ -2799,6 +3271,56 @@ export function getWebviewContent(
                 return;
             }
             
+            // Handle Tab key for indentation in editor
+            if (e.key === 'Tab') {
+                e.preventDefault(); // Always prevent default to keep focus in editor
+                
+                const start = editor.selectionStart;
+                const end = editor.selectionEnd;
+                const text = editor.value;
+                
+                // Find start of current line
+                let lineStart = start;
+                while (lineStart > 0 && text[lineStart - 1] !== '\\n') {
+                    lineStart--;
+                }
+                
+                if (e.shiftKey) {
+                    // Shift+Tab: Remove indentation (outdent)
+                    const lineBeforeCursor = text.substring(lineStart, start);
+                    const match = lineBeforeCursor.match(/^(\\s+)/);
+                    if (match) {
+                        const indent = match[1];
+                        // Remove up to 4 spaces or 1 tab
+                        const removeLength = indent.startsWith('\\t') ? 1 : Math.min(4, indent.length);
+                        const newText = text.substring(0, lineStart) + text.substring(lineStart + removeLength);
+                        editor.value = newText;
+                        const cursorAdjust = Math.min(removeLength, start - lineStart);
+                        editor.selectionStart = start - cursorAdjust;
+                        editor.selectionEnd = end - cursorAdjust;
+                        updatePreview();
+                        notifyChange();
+                    }
+                } else {
+                    // Tab: Add indentation (indent)
+                    // Check if we're in a list for special handling
+                    const lineBeforeCursor = text.substring(lineStart, start);
+                    const isInList = /^\\s*[-*+]\\s/.test(lineBeforeCursor) || 
+                                    /^\\s*\\d+\\.\\s/.test(lineBeforeCursor) || 
+                                    /^\\s*-\\s\\[[ x]\\]\\s/.test(lineBeforeCursor);
+                    
+                    // For lists, add 2 spaces; for regular text, add 4 spaces (or tab character)
+                    const tabString = isInList ? '  ' : '    '; // Use 4 spaces for regular indentation
+                    const newText = text.substring(0, lineStart) + tabString + text.substring(lineStart);
+                    editor.value = newText;
+                    editor.selectionStart = start + tabString.length;
+                    editor.selectionEnd = end + tabString.length;
+                    updatePreview();
+                    notifyChange();
+                }
+                return;
+            }
+            
             if (e.ctrlKey || e.metaKey) {
                 // Note: Ctrl+Z and Ctrl+Shift+Z work natively in textarea, so we don't override them
                 if (e.key === 'f') {
@@ -2806,6 +3328,7 @@ export function getWebviewContent(
                     openSearch();
                 } else if (e.key === 'b') {
                     e.preventDefault();
+                    e.stopPropagation(); // Prevent VS Code sidebar toggle
                     wrapSelection('**', '**');
                 } else if (e.key === 'i') {
                     e.preventDefault();
@@ -2832,14 +3355,119 @@ export function getWebviewContent(
                 return;
             }
             
-            // Handle Enter key - use browser's default but trigger sync after
+            // Handle Tab key for indentation in preview
+            if (e.key === 'Tab') {
+                e.preventDefault(); // Always prevent default to keep focus in preview
+                
+                const selection = window.getSelection();
+                if (selection && selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    let node = range.commonAncestorContainer;
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        node = node.parentElement;
+                    }
+                    
+                    // Find if we're in a list item
+                    let listItem = node;
+                    while (listItem && listItem !== preview && listItem.tagName !== 'LI') {
+                        listItem = listItem.parentElement;
+                    }
+                    
+                    if (listItem && listItem.tagName === 'LI') {
+                        // We're in a list - handle list indentation
+                        const parentList = listItem.parentElement;
+                        
+                        if (e.shiftKey) {
+                            // Shift+Tab: Outdent (move up one level)
+                            const grandParentList = parentList.parentElement?.closest('ul, ol');
+                            if (grandParentList && grandParentList.tagName !== 'BODY') {
+                                // Find the parent LI
+                                const parentLI = parentList.closest('li');
+                                if (parentLI) {
+                                    // Insert after parent LI
+                                    grandParentList.insertBefore(listItem, parentLI.nextSibling);
+                                    
+                                    // Remove empty parent list if needed
+                                    if (parentList.children.length === 0) {
+                                        parentList.remove();
+                                    }
+                                    
+                                    setTimeout(() => syncPreviewToEditor(), 50);
+                                }
+                            }
+                        } else {
+                            // Tab: Indent (create nested list)
+                            const prevItem = listItem.previousElementSibling;
+                            if (prevItem && prevItem.tagName === 'LI') {
+                                // Check if prev item already has a nested list
+                                let nestedList = prevItem.querySelector(':scope > ul, :scope > ol');
+                                
+                                if (!nestedList) {
+                                    // Create new nested list of same type as parent
+                                    nestedList = document.createElement(parentList.tagName.toLowerCase());
+                                    prevItem.appendChild(nestedList);
+                                }
+                                
+                                // Move current item into nested list
+                                nestedList.appendChild(listItem);
+                                setTimeout(() => syncPreviewToEditor(), 50);
+                            }
+                        }
+                    } else {
+                        // Not in a list - insert tab/spaces for regular indentation
+                        // Insert 4 spaces for regular text indentation
+                        document.execCommand('insertText', false, '    ');
+                        setTimeout(() => syncPreviewToEditor(), 50);
+                    }
+                }
+                return;
+            }
+            
+            // Handle Enter key - convert heading to normal paragraph on new line
             if (e.key === 'Enter') {
-                // Let browser handle Enter naturally, then sync
+                const selection = window.getSelection();
+                if (selection && selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    let node = range.commonAncestorContainer;
+                    if (node.nodeType === Node.TEXT_NODE) {
+                        node = node.parentElement;
+                    }
+                    
+                    // Check if we're in a heading
+                    let headingNode = node;
+                    while (headingNode && headingNode !== preview) {
+                        if (/^H[1-6]$/.test(headingNode.tagName)) {
+                            // We're in a heading - insert a new paragraph after Enter
+                            e.preventDefault();
+                            
+                            // Create new paragraph
+                            const p = document.createElement('p');
+                            p.innerHTML = '<br>'; // Ensure it's editable
+                            
+                            // Insert after the heading
+                            headingNode.parentNode.insertBefore(p, headingNode.nextSibling);
+                            
+                            // Move cursor to new paragraph
+                            const newRange = document.createRange();
+                            newRange.setStart(p, 0);
+                            newRange.collapse(true);
+                            selection.removeAllRanges();
+                            selection.addRange(newRange);
+                            
+                            // Sync to markdown
+                            setTimeout(() => syncPreviewToEditor(), 50);
+                            return;
+                        }
+                        headingNode = headingNode.parentElement;
+                    }
+                }
+                
+                // Default Enter behavior for non-headings, then sync
                 setTimeout(() => {
                     clearTimeout(previewSyncTimeout);
                     previewSyncTimeout = setTimeout(() => {
                         syncPreviewToEditor();
-                    }, 1000); // Match the input debounce time
+                    }, 300); // Match the input debounce time
                 }, 0);
                 return; // Let default behavior happen
             }
@@ -2865,6 +3493,7 @@ export function getWebviewContent(
                     }
                 } else if (e.key === 'b') {
                     e.preventDefault();
+                    e.stopPropagation(); // Prevent VS Code sidebar toggle
                     wrapSelection('**', '**');
                 } else if (e.key === 'i') {
                     e.preventDefault();

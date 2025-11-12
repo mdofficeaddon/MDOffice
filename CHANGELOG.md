@@ -1,9 +1,91 @@
 # Changelog
 
-All notable changes to the "Markdown Office Editor" extension will be documented in this file.
+All notable changes to the "MDOffice - Markdown Office Editor" extension will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.2.5] - 2025-11-12
+
+### Added
+- **Tab Key Support**: Full support for Tab/Shift+Tab list indentation in both editor and preview modes
+  - Tab indents list items (2 spaces for lists, 4 spaces for general text in editor)
+  - Shift+Tab outdents list items
+  - Works seamlessly with bullet lists, numbered lists, and task lists
+- **Smart List Conversion**: Intelligent transformation of selected text into lists
+  - Converts multiple lines into bullet, numbered, or task lists
+  - Automatically inserts new list items when no text is selected
+  - Works in both editor and preview modes
+- **Split View Editing**: Preview panel is now fully editable in split view mode
+  - Edit directly in preview while viewing markdown source
+  - Bidirectional sync between both panels
+- **Intelligent Content Insertion**: Toolbar buttons work without selection
+  - Heading buttons insert new headings at cursor or end of document
+  - List buttons insert new list items when no text is selected
+
+### Improved
+- **View Mode Names**: Renamed for better clarity
+  - "Preview Only" → "Office View"
+  - "Editor Only" → "Editor View"
+- **Heading Functionality**: Enhanced heading buttons behavior
+  - Apply heading styles to entire current line in editor mode
+  - Convert current block to heading in preview mode
+  - No selection required - works at cursor position
+- **Toolbar Button Focus**: Proper focus management after toolbar actions
+  - Buttons restore focus to active editor (preview or markdown)
+  - Prevents cursor from jumping to top of document
+  - Try-catch error handling prevents UI disruptions
+- **Nested List Rendering**: Completely rewritten list parser
+  - Correct HTML structure with nested `<ul>/<ol>` inside `<li>` elements
+  - Proper indentation in generated Markdown
+  - Handles deeply nested lists (5+ levels) correctly
+  - Maintains proper structure for mixed list types
+- **Performance Optimization**: Reduced sync delays for more responsive editing
+  - Preview sync: 300ms (down from 1000ms)
+  - Undo save timeout: 1000ms (down from 2000ms)
+  - Table manipulation: 50ms (down from 100ms)
+- **UI Refinement**: Cleaner, more professional interface
+  - Removed borders around text areas
+  - Removed box shadows on focus for distraction-free editing
+
+### Fixed
+- **Toolbar Usability**: Major fixes to toolbar button functionality
+  - Buttons now respond reliably in all view modes
+  - Fixed cursor jumping to top when errors occur
+  - Proper error handling prevents UI corruption
+- **Nested Lists in Office View**: Fixed rendering and editing
+  - Correct display of multi-level nested lists
+  - Ability to create and edit nested lists directly in Office View
+  - Proper conversion between HTML and Markdown for complex nesting
+- **Keyboard Shortcuts**: Fixed conflicts with VS Code
+  - Ctrl+B (Bold) no longer toggles VS Code sidebar
+  - Added `stopPropagation()` to prevent event bubbling
+- **Heading Behavior**: Enter key after headings returns to paragraph
+  - Pressing Enter in a heading creates a new paragraph
+  - No longer continues heading formatting on next line
+- **List Parsing Edge Cases**: Resolved issues with complex nested structures
+  - Task lists with multiple nesting levels
+  - Mixed bullet and numbered lists
+  - Lists with varying indentation levels
+
+## [0.2.4] - 2025-11-12
+
+### Changed
+- Cleaned up development documentation files from root directory
+- Improved project structure and organization
+
+### Maintenance
+- Removed residual markdown files from root (moved to docs-internal)
+- Better separation of user-facing and internal documentation
+
+## [0.2.3] - 2025-11-11
+
+### Fixed
+- Fixed publisher ID configuration for marketplace publishing
+- Updated extension publishing workflow and documentation
+
+### Changed
+- Improved publishing documentation with detailed guides for VS Code Marketplace and Open VSX
 
 ## [0.2.2] - 2025-11-10
 
@@ -62,7 +144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-10-11
 
 ### Added
-- Initial release of Markdown Office Editor
+- Initial release of MDOffice - Markdown Office Editor
 - Office-like interface with rich toolbar
 - Basic markdown editing features:
   - Text formatting (Bold, Italic, Strikethrough, Code)
@@ -97,7 +179,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Ctrl/Cmd+Shift+V for Toggle View
 - Custom editor integration:
   - Right-click context menu
-  - "Open with Markdown Office Editor" option
+  - "Open with MDOffice - Markdown Office Editor" option
 - GitHub-flavored markdown support
 - Syntax highlighting for code blocks
 - Auto-save after 1 second of inactivity
@@ -115,7 +197,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Version 0.2.0 - Major Feature Update
 
-This release transforms the Markdown Office Editor into a true WYSIWYG editor with the addition of preview editing, find & replace, and numerous quality-of-life improvements. The extension now offers a complete Office-like experience for markdown editing.
+This release transforms the MDOffice - Markdown Office Editor into a true WYSIWYG editor with the addition of preview editing, find & replace, and numerous quality-of-life improvements. The extension now offers a complete Office-like experience for markdown editing.
 
 **Key Highlights:**
 - Edit directly in the preview with full formatting support
@@ -126,7 +208,7 @@ This release transforms the Markdown Office Editor into a true WYSIWYG editor wi
 
 ### Version 0.1.0 - Initial Release
 
-The first public release of Markdown Office Editor brings an Office-like interface to markdown editing in VS Code and Cursor. With a rich toolbar, live preview, and export capabilities, it makes markdown editing more accessible and visual.
+The first public release of MDOffice - Markdown Office Editor brings an Office-like interface to markdown editing in VS Code and Cursor. With a rich toolbar, live preview, and export capabilities, it makes markdown editing more accessible and visual.
 
 ---
 

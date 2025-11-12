@@ -1,10 +1,4 @@
-# Markdown Office Editor
-
-[![Version](https://img.shields.io/visual-studio-marketplace/v/MDOffice.md-office-editor?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=MDOffice.md-office-editor)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/MDOffice.md-office-editor)](https://marketplace.visualstudio.com/items?itemName=MDOffice.md-office-editor)
-[![Rating](https://img.shields.io/visual-studio-marketplace/r/MDOffice.md-office-editor)](https://marketplace.visualstudio.com/items?itemName=MDOffice.md-office-editor)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![GitHub](https://img.shields.io/github/stars/mdofficeaddon/MDOffice?style=social)](https://github.com/mdofficeaddon/MDOffice)
+# MDOffice - Markdown Office Editor
 
 Transform your VS Code or Cursor into a powerful **Office-like markdown editor**! Edit documents visually with rich formatting tools, WYSIWYG preview editing, search & replace, and professional export options - all in a familiar, user-friendly interface.
 
@@ -106,9 +100,9 @@ Example markdown once you add screenshots:
 
 1. Open **VS Code** or **Cursor**
 2. Go to **Extensions** (Ctrl+Shift+X / Cmd+Shift+X)
-3. Search for **"Markdown Office Editor"**
+3. Search for **"MDOffice - Markdown Office Editor"**
 4. Click **Install**
-5. Open any `.md` file and right-click → **"Open with Markdown Office Editor"**
+5. Open any `.md` file and right-click → **"Open with MDOffice - Markdown Office Editor"**
 
 ### From VSIX File
 

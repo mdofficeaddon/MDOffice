@@ -1,6 +1,6 @@
-# Markdown Office Editor - Static Website
+# MDOffice - Markdown Office Editor - Static Website
 
-This directory contains the static HTML landing page for the Markdown Office Editor VS Code extension.
+This directory contains the static HTML landing page for the MDOffice - Markdown Office Editor VS Code extension.
 
 ## Deployment
 
@@ -96,5 +96,5 @@ public/
 
 ## License
 
-This landing page is part of the Markdown Office Editor project and is licensed under the MIT License.
+This landing page is part of the MDOffice - Markdown Office Editor project and is licensed under the MIT License.
 

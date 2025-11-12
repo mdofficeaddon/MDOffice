@@ -3,7 +3,7 @@ import { MarkdownEditorProvider } from './markdownEditorProvider';
 import { ExportService } from './exportService';
 
 export function activate(context: vscode.ExtensionContext) {
-    console.log('Markdown Office Editor is now active');
+    console.log('MDOffice - Markdown Office Editor is now active');
 
     // Register the custom editor provider
     const provider = new MarkdownEditorProvider(context);
@@ -83,6 +83,6 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 export function deactivate() {
-    console.log('Markdown Office Editor is now deactivated');
+    console.log('MDOffice - Markdown Office Editor is now deactivated');
 }
 

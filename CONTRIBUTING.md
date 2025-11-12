@@ -1,6 +1,6 @@
-# Contributing to Markdown Office Editor
+# Contributing to MDOffice - Markdown Office Editor
 
-First off, thank you for considering contributing to Markdown Office Editor! It's people like you that make this extension better for everyone.
+First off, thank you for considering contributing to MDOffice - Markdown Office Editor! It's people like you that make this extension better for everyone.
 
 ## Table of Contents
 
@@ -129,7 +129,7 @@ Describe the tests you ran to verify your changes.
 5. **Run the extension**
    - Press `F5` to open the Extension Development Host
    - Open a `.md` file
-   - Right-click → "Open with Markdown Office Editor"
+   - Right-click → "Open with MDOffice - Markdown Office Editor"
 
 ### Development Workflow
 

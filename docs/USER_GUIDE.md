@@ -1,10 +1,10 @@
-# Markdown Office Editor - User Guide
+# MDOffice - Markdown Office Editor - User Guide
 
 ## Quick Start
 
 ### Opening a Markdown File
 1. Open any `.md` file in VS Code
-2. Right-click in the editor and select **"Open with Markdown Office Editor"**
+2. Right-click in the editor and select **"Open with MDOffice - Markdown Office Editor"**
 3. The editor will open in split view by default (editor + preview)
 
 ### Basic Features
