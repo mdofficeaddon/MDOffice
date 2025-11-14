@@ -5,6 +5,196 @@ All notable changes to the "MDOffice - Markdown Office Editor" extension will be
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed 🐛
+- **Markdown File Link Fix**: Fixed issue with underscores in linked filenames
+  - Previously, links like `[Test](./TEST_IMAGES.md)` were failing with "File not found: ./TEST<em>IMAGES</em>.md"
+  - Root cause: Italic/emphasis parsing was converting underscores to `<em>` tags before link processing
+  - Solution: Reordered markdown parsing to process links before bold/italic formatting
+  - Now correctly preserves all special characters in link URLs
+  - Added comprehensive test suite for links with underscores
+- **Image Button Fix**: Fixed image button functionality with improved dialog interface
+  - Replaced prompt-based UI with modern HTML dialog
+  - Added detailed logging for debugging
+  - Added element existence checks before attaching event listeners
+  - Improved error handling with try-catch blocks
+- **Clipboard Image Paste**: Enhanced logging for clipboard image paste functionality
+  - Better debugging output for troubleshooting
+  - Improved error messages when paste fails
+
+## [0.2.7] - 2025-11-14
+
+### Added ✨
+- **🖼️ Enhanced Image Support**: Complete overhaul of image insertion capabilities
+  - **File Browser**: Select images from file system with native file picker
+    - Supports PNG, JPG, JPEG, GIF, SVG, BMP, WEBP formats
+    - Choose between relative path, absolute path, or base64 embedding
+  - **Drag & Drop**: Drag images directly from file explorer into editor or preview
+    - Automatically saves to `images/` folder
+    - Inserts markdown with relative path
+  - **Clipboard Paste**: Paste images directly with Ctrl+V (Cmd+V on Mac)
+    - Works with screenshots, copied images from web, etc.
+    - Auto-saves as `images/pasted-image-[timestamp].png`
+  - **URL Support**: Insert images from online URLs (HTTP/HTTPS)
+  - **Base64 Support**: Embed images directly in markdown
+  - **Enhanced Image Button**: Three-option menu (Browse/URL/Clipboard instructions)
+
+- **Smart Link Navigation**: Comprehensive support for markdown file links and anchor navigation
+  - **Markdown File Links**: Click any `.md` or `.markdown` link to open it in MDOffice editor
+    - Visual indicator: Green color with 📄 icon
+    - Automatic relative path resolution
+    - Examples: `[Guide](./docs/guide.md)`, `[README](../README.md)`
+  
+  - **Anchor Links**: Jump to specific headings within the same document
+    - Visual indicator: Purple color
+    - Smooth scrolling animation
+    - Works with all heading levels (H1-H6)
+    - Example: `[Go to Features](#features)`
+  
+  - **Combined File + Anchor**: Open another file AND jump to a specific section
+    - Opens the target markdown file in MDOffice
+    - Automatically scrolls to the specified heading
+    - Brief yellow highlight on target heading
+    - Example: `[API Setup](./api.md#authentication)`
+  
+  - **Automatic Heading IDs**: All headings now get slugified IDs for anchor linking
+    - `## Getting Started` → `id="getting-started"`
+    - `## API & SDK` → `id="api-sdk"`
+    - No manual configuration needed
+  
+  - **Enhanced External Links**: HTTP/HTTPS links open in browser with security attributes
+    - Opens in new tab with `rel="noopener noreferrer"`
+    - Visual indicator: Standard blue link color
+  
+  - **Visual Feedback System**:
+    - Hover tooltips show link destinations
+    - Color-coded link types (green, purple, blue)
+    - Smooth scroll animations
+    - Temporary heading highlights
+
+### Fixed 🔧
+- **Critical: Image Display**: Fixed markdown parsing order that prevented images from rendering
+  - Images are now processed before links to prevent regex conflicts
+  - Resolves issue where images appeared as text (e.g., "!Screenshot 1")
+- **Local Image Paths**: Relative image paths now work correctly in preview
+  - Extended `localResourceRoots` to include document directory
+  - Automatic conversion of relative paths to webview URIs
+  - Handles paths with spaces and special characters (URL encoding/decoding)
+- **Content Security Policy**: Updated CSP to allow images from all sources
+  - `img-src` now includes webview resources, data URIs, HTTP/HTTPS, and file protocol
+
+### Improved 🚀
+- **Image Path Resolution**: Smart handling of different path types
+  - Relative paths: `./images/photo.png` → webview URI
+  - Absolute paths: Full system paths → webview URI  
+  - URLs: `https://...` → direct (no conversion)
+  - Data URIs: `data:image/...` → direct (no conversion)
+- **Image Organization**: Automatic folder structure
+  - Pasted/dropped images saved to `images/` folder
+  - Maintains clean project organization
+- **Developer Experience**: Added debug logging for image path resolution
+  - Console logs show original path, cleaned path, and resolved URI
+  - Visual error indicators (red border) for failed image loads
+- **Link Type Recognition**: Intelligent detection of different link formats
+  - Markdown files (.md, .markdown)
+  - Anchor links (starting with #)
+  - External links (http://, https://)
+  - Mailto links
+  - Data URIs
+- **Documentation Navigation**: Create interconnected markdown files like a wiki
+- **Dark Theme Support**: All link colors optimized for both light and dark themes
+
+## [0.2.6] - 2025-11-14
+
+### Fixed 🔧
+- **Toolbar Buttons (Bold, Italic, etc.)**: Fixed critical issue where formatting buttons didn't work when clicked
+  - Problem: Clicking buttons caused focus to shift away from editor, breaking functionality
+  - Solution: Implemented `lastActiveEditor` tracking to remember which editor was active
+  - All formatting buttons now work reliably in both Editor and Preview modes
+  - Keyboard shortcuts (Ctrl+B, Ctrl+I, etc.) continue to work as before
+
+- **Export Buttons (HTML/PDF)**: Fixed non-functional export buttons in toolbar
+  - Export buttons now properly trigger VS Code commands
+  - Added comprehensive error handling and logging
+  - Export dialog now appears correctly when clicking toolbar buttons
+  - Both "Export HTML" and "Export PDF" buttons fully functional
+
+### Improved 🚀
+- **Export HTML/PDF Quality**: Complete rewrite of markdown parser using markdown-it library
+  - **Tables**: Now properly converted to HTML `<table>` with `<thead>` and `<tbody>`
+    - Support for table alignment (left, center, right)
+    - Proper handling of special characters in tables
+    - Empty cells handled correctly
+    - Complex tables with formatting (bold, italic, code, links) work perfectly
+  
+  - **Checklists/Task Lists**: Fully functional checkbox conversion
+    - `- [ ]` converts to proper HTML checkboxes
+    - `- [x]` converts to checked checkboxes
+    - Nested task lists with unlimited depth
+    - Empty checkboxes (just `- [ ]`) handled correctly
+    - Task lists with formatting (bold, italic, code, links) work
+    - 6-pass regex system ensures ALL checkboxes are converted
+  
+  - **Nested Lists**: Perfect rendering of multi-level lists
+    - Bullet lists (ul) with proper nesting
+    - Numbered lists (ol) with proper nesting
+    - Mixed nested lists (bullets inside numbers, etc.)
+    - Proper progressive styling (disc → circle → square)
+    - Numbered lists use progressive styles (1,2,3 → a,b,c → i,ii,iii)
+  
+  - **Blockquotes**: Proper nested blockquote support
+    - Multi-level blockquotes render correctly
+    - Formatting inside blockquotes preserved
+  
+  - **Code Blocks**: Language-specific syntax highlighting preserved
+  - **Links and Images**: Proper conversion with alt text and titles
+  - **Horizontal Rules**: Correctly converted from `---` or `***`
+
+- **Export Styling**: Enhanced CSS for professional document output
+  - **Deep Nesting Support**: Special styling for lists up to 6+ levels
+    - Progressive spacing reduction for deeper levels
+    - Visual depth indicators (subtle borders)
+    - Background shading for very deep nesting (level 4+)
+    - Bullet style progression (disc → circle → square → repeat)
+    - Ordered list style progression (1,2,3 → a,b,c → i,ii,iii → repeat)
+  
+  - **Task List Styling**: Matches Office View appearance
+    - Hover effects on task items
+    - Checkboxes with hover states
+    - Strikethrough for completed tasks
+    - Visual hierarchy with connecting lines for nested tasks
+    - Progressive blue-tinted background for depth
+    - Proper spacing between task levels
+  
+  - **Professional Typography**: Clean, readable output
+    - GitHub-flavored styling
+    - Proper line heights and spacing
+    - Responsive design for different screen sizes
+
+### Technical 🔧
+- **Error Handling**: Comprehensive logging throughout export pipeline
+  - Console logs for debugging export issues
+  - Try-catch blocks prevent silent failures
+  - User-friendly error messages
+- **Code Quality**: TypeScript type safety improvements
+  - Proper type annotations for regex callbacks
+  - @ts-ignore for markdown-it import (no types available)
+- **Parser Robustness**: Multiple-pass regex system for complex edge cases
+  - Pass 1: Handles `<li><p>[x]</p><nested>content</nested></li>`
+  - Pass 2: Handles empty checkboxes in paragraphs
+  - Pass 3: Handles bare checkboxes without tags
+  - Pass 4: Handles inline checkboxes with nested content
+  - Pass 5: Line-by-line processing for missed patterns
+  - Pass 6: Cleanup pass for unclosed spans
+  - Recursive loop for nested `task-list` class application
+
+### Developer Notes 📝
+- Export now uses `markdown-it` library instead of custom regex parser
+- Post-processing handles task lists (not natively supported by markdown-it)
+- HTML output compatible with print-to-PDF in browsers
+- CSS designed for both screen viewing and PDF generation
+
 ## [0.2.5] - 2025-11-12
 
 ### Added

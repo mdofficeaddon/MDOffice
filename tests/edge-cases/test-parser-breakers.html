@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-parser-breakers</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Parser Breakers and Ambiguous Syntax</h1>
+<p>This document contains edge cases that might break or confuse markdown parsers.</p>
+<h2>Ambiguous Emphasis</h2>
+<p>Asterisk vs emphasis:</p>
+<ul>
+<li>2 * 3 = 6 (math)</li>
+<li>2*3=6 (still math?)</li>
+<li><em>2 * 3</em> = 6 (italic with asterisk?)</li>
+<li><em>text</em> (italic)</li>
+</ul>
+<p>Underscore vs emphasis:</p>
+<ul>
+<li>snake_case_variable (code convention)</li>
+<li>file_name_example (code convention)</li>
+<li><em>italic text</em> (emphasis)</li>
+<li><strong>bold text</strong> (emphasis)</li>
+<li>some_text_with_underscores_and_more (mixed)</li>
+<li><em>this_might_be_confusing</em> (italic or code?)</li>
+</ul>
+<h2>Consecutive Formatting Markers</h2>
+<p><strong>Bold****More bold</strong></p>
+<p><strong>Bold</strong> <strong>More bold</strong></p>
+<p><em>Italic**Italic</em></p>
+<hr>
+<hr>
+<hr>
+<p><em>_</em>_*</p>
+<p><strong>__</strong>__**</p>
+<h2>Unmatched Delimiters</h2>
+<p>**Bold with <em>italic inside</em></p>
+<p>*Italic with <strong>bold inside</strong></p>
+<p>**Bold with <code>code inside</code></p>
+<p><code>Code with **bold attempt** inside</code></p>
+<p><a href="https://example.com">Link with **bold</a>**</p>
+<p><img src="https://example.com" alt="Image with *italic">*</p>
+<h2>Nested Same-Type Emphasis</h2>
+<p><strong>Bold <strong>nested bold</strong> outer</strong></p>
+<p><em>Italic <em>nested italic</em> outer</em></p>
+<p><s>Strike <s>nested strike</s> outer</s></p>
+<p><code>Code </code>nested code<code> outer</code></p>
+<h2>Backtick Variations</h2>
+<p>Single: <code>code</code></p>
+<p>Double: <code>code with `backtick` inside</code></p>
+<p>Triple: <code>code</code></p>
+<p>Mismatched: `code``</p>
+<p>Empty: ``</p>
+<p>Space: <code> </code></p>
+<h2>Link Edge Cases</h2>
+<p><a href="https://example.com"></a> - Empty text</p>
+<p><a href="">Link</a> - Empty URL</p>
+<p><a href=""></a> - Empty both</p>
+<p>[Link](url with spaces)</p>
+<p><a href="url(with)parens">Link</a></p>
+<p><a href="url%20with%20angle%20brackets">Link</a></p>
+<p>[Link][ref] - Missing reference</p>
+<p>[Link]</p>
+<p>[Link][] - Self reference</p>
+<h2>Image Edge Cases</h2>
+<p><img src="image.jpg" alt=""> - Empty alt</p>
+<p><img src="" alt="Alt text"> - Empty src</p>
+<p><img src="" alt=""> - Empty both</p>
+<p>![Alt](img.jpg “Title with “quotes” inside”)</p>
+<p><img src="img.jpg" alt="Alt"> - Angle brackets</p>
+<h2>Table Edge Cases</h2>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>Missing closing pipe:</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>| A | B | C</p>
+<p>Misaligned columns:</p>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+<td></td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p>Empty cells everywhere:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Code Block Edge Cases</h2>
+<p>Missing closing:</p>
+<pre><code class="language-javascript">function test() {
+    console.log(&quot;No closing fence&quot;);
+}
+
+Empty language:
+
+</code></pre>
+<p>code without language</p>
+<pre><code>
+Invalid language:
+
+```not-a-real-language
+some code
+</code></pre>
+<p>Nested fences:</p>
+<pre><code>Outer
+</code></pre>
+<p>Inner</p>
+<pre><code>Still outer?
+</code></pre>
+<h2>Blockquote Edge Cases</h2>
+<blockquote>
+<p>Quote without closing</p>
+</blockquote>
+<blockquote>
+<p>Quote</p>
+<blockquote>
+<p>Nested
+Missing return</p>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Quote with
+blank line</p>
+</blockquote>
+<p>Quote</p>
+<blockquote>
+<p>No space after &gt;</p>
+</blockquote>
+<blockquote>
+<pre><code>Code block in blockquote?
+</code></pre>
+</blockquote>
+<h2>List Edge Cases</h2>
+<ul>
+<li>Item
+-Missing space</li>
+<li>Item</li>
+</ul>
+<ul>
+<li>Mixed</li>
+</ul>
+<ul>
+<li>bullet</li>
+</ul>
+<ul>
+<li>types</li>
+</ul>
+<ol>
+<li>Numbered</li>
+<li>List</li>
+<li>Wrong number</li>
+<li>Another wrong</li>
+</ol>
+<ol>
+<li>Alternative</li>
+<li>Parenthesis</li>
+<li>Style</li>
+</ol>
+<p>-1. Negative number?</p>
+<ol start="0">
+<li>Zero start</li>
+</ol>
+<h2>Header Edge Cases</h2>
+<p>#No space after hash</p>
+<h1>Header with trailing</h1>
+<p>####### Too many hashes (level 7?)</p>
+<h1><strong>Bold Header</strong> with <em>italic</em> and <code>code</code> and <a href="url">link</a></h1>
+<h1>Header without space</h1>
+<h2>Header-with-dashes</h2>
+<h2>Mixed Line Break Styles</h2>
+<p>Line 1<br>
+Line 2 (two spaces)</p>
+<p>Line 3</p>
+<p>Line 4 (blank line)</p>
+<p>Line 5<br>
+Line 6 (HTML break)</p>
+<p>Line 7<br>
+Line 8 (backslash, if supported)</p>
+<h2>Dollar Sign Confusion</h2>
+<p>Price is $100 and $200 = $300 total</p>
+<p>Math: $x = 5$ and $y = 10$ so $x + y = 15$</p>
+<p>Mixed: The item costs $50 (price) and formula is $p = 50$ (math)</p>
+<p>Escaped: $100 is the price, not $100$ in math</p>
+<p>Double dollar:</p>
+<p>$$
+x = \frac{1}{2}
+$$</p>
+<p>Inline double: $$x = 5$$ (might not work)</p>
+<p>Triple: $$$weird$$$</p>
+<p>Mismatched: $x = 5$$</p>
+<p>$Unclosed math</p>
+<h2>HTML vs Markdown</h2>
+<p><b>HTML bold</b> vs <strong>Markdown bold</strong></p>
+<p><i>HTML italic</i> vs <em>Markdown italic</em></p>
+<p><code>HTML code</code> vs <code>Markdown code</code></p>
+<p><strike>HTML strike</strike> vs <s>Markdown strike</s></p>
+<p>HTML paragraph</p>
+<p>Markdown paragraph</p>
+<p>Mixed: <b>HTML <strong>with Markdown</strong> inside</b></p>
+<p>Mixed: <strong>Markdown <i>with HTML</i> inside</strong></p>
+<h2>Comment Edge Cases</h2>
+<!-- HTML comment -->
+<!-- Comment with **markdown** inside? -->
+<!--
+Multi-line
+comment
+with
+content
+-->
+<p>Not a comment: &lt;! not valid &gt;</p>
+<h2>URL Auto-linking</h2>
+<p><a href="https://example.com">https://example.com</a> - bare URL</p>
+<p><a href="http://example.com">http://example.com</a> - bare HTTP</p>
+<p><a href="http://www.example.com">www.example.com</a> - bare www</p>
+<p><a href="https://example.com">https://example.com</a> - angle brackets</p>
+<p><a href="https://example.com">https://example.com</a> - explicit link</p>
+<p><a href="mailto:email@example.com">email@example.com</a> - bare email</p>
+<p><a href="mailto:email@example.com">email@example.com</a> - angle brackets</p>
+<h2>Reference Definitions Edge Cases</h2>
+<h2>Character Encoding Issues</h2>
+<p>Regular quotes: “text”</p>
+<p>Smart quotes: “text”</p>
+<p>Apostrophes: don’t vs don’t</p>
+<p>Ellipsis: … vs …</p>
+<p>Dashes: - vs – vs —</p>
+<h2>Zero-Width and Special Spaces</h2>
+<p>Text with regular space</p>
+<p>Text with   multiple   spaces</p>
+<p>Text​with​zero​width​spaces (invisible)</p>
+<p>Text with non-breaking spaces (might look normal)</p>
+<p>Textwithoutspaces</p>
+<h2>Extreme Nesting</h2>
+<ul>
+<li>Level 1
+<ul>
+<li>Level 2
+<ul>
+<li>Level 3
+<ul>
+<li>Level 4
+<ul>
+<li>Level 5
+<ul>
+<li>Level 6
+<ul>
+<li>Level 7
+<ul>
+<li>Level 8
+<ul>
+<li>Level 9
+<ul>
+<li>Level 10
+<ul>
+<li>Level 11
+<ul>
+<li>Level 12
+<ul>
+<li>Level 13
+<ul>
+<li>Level 14
+<ul>
+<li>Level 15</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Level 1</p>
+<blockquote>
+<p>Level 2</p>
+<blockquote>
+<p>Level 3</p>
+<blockquote>
+<p>Level 4</p>
+<blockquote>
+<p>Level 5</p>
+<blockquote>
+<p>Level 6</p>
+<blockquote>
+<p>Level 7</p>
+<blockquote>
+<p>Level 8</p>
+<blockquote>
+<p>Level 9</p>
+<blockquote>
+<p>Level 10</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2>Overlapping Formatting</h2>
+<p><em><em>Bold <em>and italic</em></em> still italic?</em></p>
+<p><em>Italic <em><em>and bold</em> still bold?</em></em></p>
+<p><strong>Bold ~~and strike</strong> still strike?~~</p>
+<p><s>Strike **and bold</s> still bold?**</p>
+<h2>Malformed Tables</h2>
+<p>| No | Separator | Row |
+| A | B | C |</p>
+<table>
+<thead>
+<tr>
+<th>Separator</th>
+<th>Before</th>
+<th>Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<p>| Col1 | Col2 |
+|------|
+| Missing separator |</p>
+<p>| Col |
+|-----|-----|
+| Too many separators |</p>
+<h2>Unicode Edge Cases</h2>
+<p>RTL text: مرحبا (Arabic)</p>
+<p>Mixed: Hello مرحبا World</p>
+<p>Emoji: Text 😀 with 🎉 emoji 🚀 inline</p>
+<p>Combining: e + ´ = é (combining accent)</p>
+<h2>Backslash at Line End</h2>
+<p>Line with backslash at end<br>
+Does it continue?</p>
+<p>Line with escaped backslash at end\
+What happens?</p>
+<h2>Empty Structures</h2>
+<hr>
+<hr>
+<hr>
+<p><a href=""></a></p>
+<p><img src="" alt=""></p>
+<p>``</p>
+<pre><code></code></pre>
+<blockquote></blockquote>
+<ul>
+<li></li>
+</ul>
+<p>|</p>
+<h2></h2>
+<hr>
+<hr>
+<h2>Very Long Word</h2>
+<p>Supercalifragilisticexpialidociousthisisaverylongwordthatmightcauselayoutissuesinsomerenderersespeciallyiftherearenospacestobreakonsothisisatestofthatscenariowithareallyreallyreallylongwordthatjustkeepsgoing</p>
+<h2>Mixed List Markers Same Level</h2>
+<ul>
+<li>Bullet 1</li>
+</ul>
+<ul>
+<li>Bullet 2</li>
+</ul>
+<ul>
+<li>Bullet 3</li>
+</ul>
+<ul>
+<li>Bullet 4</li>
+</ul>
+<h2>Numbers with Formatting</h2>
+<p><strong>$100</strong> in bold</p>
+<p><em>€50</em> in italic</p>
+<p><code>¥1000</code> in code</p>
+<p><s>$25</s> strike price</p>
+<h2>Adjacent Code Blocks</h2>
+<pre><code class="language-javascript">Block 1
+</code></pre>
+<pre><code class="language-python">Block 2
+</code></pre>
+<p>No space between them.</p>
+<h2>Multiple Separators</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Header 1</th>
+<th style="text-align:center">Header 2</th>
+<th style="text-align:right">Header 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">----------</td>
+<td style="text-align:center">----------</td>
+<td style="text-align:right">----------</td>
+</tr>
+<tr>
+<td style="text-align:left">Left</td>
+<td style="text-align:center">Center</td>
+<td style="text-align:right">Right</td>
+</tr>
+</tbody>
+</table>
+<h2>Formatting in Links</h2>
+<p><a href="url"><strong>Bold link text</strong></a></p>
+<p><a href="url"><em>Italic link text</em></a></p>
+<p><a href="url"><code>Code link text</code></a></p>
+<p><a href="url"><s>Strike link text</s></a></p>
+<p><a href="url"><em><strong>All formatting</strong></em></a></p>
+<p><a href="url">Text with $math$</a></p>
+<h2>End of Parser Breakers</h2>
+<p>These edge cases should help identify parser weaknesses!</p>
+
+</body>
+</html>

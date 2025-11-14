@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Rendering Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+        }
+        h1 { border-bottom: 3px solid #007ACC; padding-bottom: 10px; }
+        h2 { color: #007ACC; margin-top: 1.5em; }
+        h3 { color: #555; }
+        a { color: #007ACC; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f5f5f5; font-weight: 600; }
+        blockquote { border-left: 4px solid #007ACC; padding-left: 15px; margin-left: 0; color: #666; font-style: italic; }
+        ol, ul { margin: 10px 0; padding-left: 30px; }
+        p { margin: 10px 0; }
+        strong { font-weight: 600; }
+        em { font-style: italic; }
+        strike { text-decoration: line-through; }
+        code { background-color: #f5f5f5; padding: 2px 5px; border-radius: 3px; font-family: 'Courier New', monospace; }
+        img { max-width: 50px; height: auto; vertical-align: middle; margin: 0 5px; }
+        hr { border: none; border-top: 2px solid #e0e0e0; margin: 30px 0; }
+    </style>
+</head>
+<body>
+    <h1>Link Rendering Tests</h1>
+    
+    <p>This file tests various link rendering scenarios in MDOffice.</p>
+    
+    <h2>Basic Links</h2>
+    
+    <h3>Simple External Link</h3>
+    <p>Check out <a href="https://code.visualstudio.com/">VS Code</a></p>
+    
+    <h3>Link to GitHub</h3>
+    <p>Visit the <a href="https://github.com/mdofficeaddon/MDOffice">MDOffice Repository</a></p>
+    
+    <h2>Links with Titles</h2>
+    
+    <h3>Link with Hover Title</h3>
+    <p>Learn more about <a href="https://en.wikipedia.org/wiki/Markdown" title="Markdown is a lightweight markup language">Markdown</a></p>
+    
+    <h3>Another Link with Title</h3>
+    <p>Read about <a href="https://www.typescriptlang.org/" title="TypeScript is a typed superset of JavaScript">TypeScript</a></p>
+    
+    <h2>Multiple Links in Paragraph</h2>
+    
+    <p>You can use <strong><a href="https://example.com">bold links</a></strong>, <em><a href="https://example.com">italic links</a></em>, and <strike><a href="https://example.com">strikethrough links</a></strike>.</p>
+    
+    <h2>Links with Different Protocols</h2>
+    
+    <h3>HTTPS Link</h3>
+    <p>Secure connection: <a href="https://www.example.com">Encrypted Site</a></p>
+    
+    <h3>HTTP Link</h3>
+    <p>Standard connection: <a href="http://www.example.com">Regular Site</a></p>
+    
+    <h3>FTP Link</h3>
+    <p>File transfer: <a href="ftp://files.example.com">Download Files</a></p>
+    
+    <h2>Links to Different Content Types</h2>
+    
+    <h3>Link to PDF</h3>
+    <p>Download the <a href="https://example.com/docs/user-guide.pdf">User Guide</a></p>
+    
+    <h3>Link to Image</h3>
+    <p>View the <a href="https://example.com/images/sample.jpg">Sample Image</a></p>
+    
+    <h3>Link to Video</h3>
+    <p>Watch the <a href="https://example.com/videos/tutorial.mp4">Tutorial</a></p>
+    
+    <h2>Relative Links</h2>
+    
+    <h3>Relative Path Links</h3>
+    <ul>
+        <li><a href="./docs/README.md">Local File</a></li>
+        <li><a href="../README.md">Parent Directory</a></li>
+        <li><a href="/README.md">Root File</a></li>
+    </ul>
+    
+    <h2>Email Links</h2>
+    
+    <h3>Mailto Links</h3>
+    <p>Contact us at <a href="mailto:support@example.com">support@example.com</a></p>
+    
+    <p>Or send feedback to <a href="mailto:feedback@mdoffice.dev?subject=Feedback">feedback@mdoffice.dev</a></p>
+    
+    <h2>Anchor/Fragment Links</h2>
+    
+    <h3>Internal Anchors</h3>
+    <ul>
+        <li>Jump to <a href="#basic-links">Basic Links</a></li>
+        <li>Jump to <a href="#links-with-titles">Links with Titles</a></li>
+        <li>Jump to <a href="#tables">Tables</a></li>
+    </ul>
+    
+    <h2>Links in Lists</h2>
+    
+    <h3>Ordered List with Links</h3>
+    <ol>
+        <li>First item - <a href="https://docs.example.com">Documentation</a></li>
+        <li>Second item - <a href="https://api.example.com">API Reference</a></li>
+        <li>Third item - <a href="https://blog.example.com">Blog</a></li>
+    </ol>
+    
+    <h3>Unordered List with Links</h3>
+    <ul>
+        <li><a href="https://github.com">GitHub</a></li>
+        <li><a href="https://gitlab.com">GitLab</a></li>
+        <li><a href="https://bitbucket.org">Bitbucket</a></li>
+    </ul>
+    
+    <h3>Task List with Links</h3>
+    <ul>
+        <li><strong>✓</strong> Read the <a href="https://example.com/install">Installation Guide</a></li>
+        <li><strong>✓</strong> Follow the <a href="https://example.com/quickstart">Quick Start</a></li>
+        <li>☐ Complete the <a href="https://example.com/advanced">Advanced Tutorial</a></li>
+    </ul>
+    
+    <h2>Links in Tables</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Documentation</th>
+                <th>Repository</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Installation</td>
+                <td><a href="https://docs.example.com/install">Guide</a></td>
+                <td><a href="https://github.com/example/install">Repo</a></td>
+            </tr>
+            <tr>
+                <td>Configuration</td>
+                <td><a href="https://docs.example.com/config">Guide</a></td>
+                <td><a href="https://github.com/example/config">Repo</a></td>
+            </tr>
+            <tr>
+                <td>Development</td>
+                <td><a href="https://docs.example.com/dev">Guide</a></td>
+                <td><a href="https://github.com/example/dev">Repo</a></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>Links in Blockquotes</h2>
+    <blockquote>
+        <p>"The best way to predict the future is to invent it."<br>
+        — <a href="https://en.wikipedia.org/wiki/Alan_Kay">Alan Kay</a></p>
+    </blockquote>
+    
+    <blockquote>
+        <p>Check out this amazing tool: <a href="https://marketplace.visualstudio.com/items?itemName=mdoffice/editor">MDOffice</a></p>
+    </blockquote>
+    
+    <h2>Links with Special Characters in URLs</h2>
+    
+    <h3>URL with Query Parameters</h3>
+    <p>Search for <a href="https://www.google.com/search?q=markdown+syntax">Markdown Syntax</a></p>
+    
+    <h3>URL with Complex Path</h3>
+    <p>Navigate to <a href="https://example.com/path/to/page?id=123&name=test&sort=desc#section">Complex URL</a></p>
+    
+    <h3>URL with Special Characters</h3>
+    <p>Link with <a href="https://example.com/files/document_(2024).pdf">Special Chars</a></p>
+    
+    <h2>Links with Emphasis</h2>
+    
+    <h3>Bold Link</h3>
+    <p><strong><a href="https://docs.example.com">Important Documentation</a></strong></p>
+    
+    <h3>Italic Link</h3>
+    <p><em><a href="https://blog.example.com">Recommended Reading</a></em></p>
+    
+    <h3>Bold Italic Link</h3>
+    <p><strong><em><a href="https://security.example.com">Critical Update</a></em></strong></p>
+    
+    <h2>Inline Code with Links</h2>
+    <p>Use the <a href="https://cli.example.com">command line tool</a> with <code>npm install package-name</code></p>
+    
+    <h2>Image Links (Clickable Images)</h2>
+    <p><a href="https://code.visualstudio.com/"><img src="https://code.visualstudio.com/favicon.ico" alt="VS Code Logo"></a></p>
+    
+    <p><a href="https://marketplace.visualstudio.com/items?itemName=mdoffice/editor"><img src="https://img.shields.io/badge/MDOffice-Markdown%20Editor-blue" alt="MDOffice Badge"></a></p>
+    
+    <h2>Links at End of Paragraph</h2>
+    <p>This is a paragraph with a link at the end <a href="https://example.com">Learn More</a>.</p>
+    
+    <h2>Multiple Links in Sequence</h2>
+    <p>Visit <a href="https://example-a.com">Site A</a>, <a href="https://example-b.com">Site B</a>, and <a href="https://example-c.com">Site C</a> for more information.</p>
+    
+    <h2>Link Edge Cases</h2>
+    
+    <h3>Link with Empty Text</h3>
+    <p><a href="https://example.com"></a></p>
+    
+    <h3>Link with Only Spaces</h3>
+    <p><a href="https://example.com"> </a></p>
+    
+    <h3>Link with Parentheses in URL</h3>
+    <p>Reference <a href="https://docs.example.com/api/function(param1,param2)">Function Docs</a></p>
+    
+    <h3>Malformed Link (Missing URL)</h3>
+    <p><a href="">Broken Link</a></p>
+    
+    <h2>Social Media Links</h2>
+    <ul>
+        <li><a href="https://twitter.com">Twitter</a></li>
+        <li><a href="https://linkedin.com">LinkedIn</a></li>
+        <li><a href="https://github.com">GitHub</a></li>
+        <li><a href="https://youtube.com">YouTube</a></li>
+        <li><a href="https://discord.com">Discord</a></li>
+    </ul>
+    
+    <h2>Developer Resource Links</h2>
+    <ul>
+        <li><a href="https://developer.mozilla.org">MDN Web Docs</a></li>
+        <li><a href="https://stackoverflow.com">Stack Overflow</a></li>
+        <li><a href="https://dev.to">Dev.to</a></li>
+        <li><a href="https://hashnode.com">Hashnode</a></li>
+    </ul>
+    
+    <hr>
+    
+    <p><strong>Test Complete!</strong> This markdown file demonstrates various link rendering scenarios that MDOffice should handle correctly.</p>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

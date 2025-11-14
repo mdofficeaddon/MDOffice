@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-blockquotes</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Blockquotes Test Document</h1>
+<p>This document demonstrates nested blockquote support in the MDOffice - Markdown Office Editor.</p>
+<h2>Basic Blockquotes</h2>
+<blockquote>
+<p>This is a simple blockquote.
+It can span multiple lines.</p>
+</blockquote>
+<blockquote>
+<p>Another blockquote here.</p>
+</blockquote>
+<h2>Nested Blockquotes (Level 2)</h2>
+<blockquote>
+<p>This is the first level of quotation.</p>
+<blockquote>
+<p>This is nested blockquote - level 2.
+It’s indented further.</p>
+</blockquote>
+<p>Back to level 1.</p>
+</blockquote>
+<h2>Deeply Nested Blockquotes (Level 3)</h2>
+<blockquote>
+<p>First level quote</p>
+<blockquote>
+<p>Second level quote</p>
+<blockquote>
+<p>Third level quote - this is deeply nested!
+Notice the different shading.</p>
+</blockquote>
+<p>Back to second level.</p>
+</blockquote>
+<p>Back to first level.</p>
+</blockquote>
+<h2>Complex Nesting Example</h2>
+<blockquote>
+<p><strong>Important Note:</strong></p>
+<p>This is a blockquote with <strong>bold text</strong> and <em>italic text</em>.</p>
+<blockquote>
+<p>A nested quote with <code>inline code</code>.</p>
+<blockquote>
+<p>And a deeply nested quote with <a href="https://example.com">a link</a>.</p>
+<p>Even deeper content!</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2>Blockquotes with Other Elements</h2>
+<blockquote>
+<h3>Heading in Blockquote</h3>
+<p>You can include headings in blockquotes:</p>
+<ul>
+<li>Bullet point 1</li>
+<li>Bullet point 2
+<ul>
+<li>Nested bullet</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>Numbered item 1</li>
+<li>Numbered item 2</li>
+</ol>
+<p>Even code blocks:</p>
+<pre><code class="language-javascript">function quote() {
+  return &quot;Code in blockquote!&quot;;
+}
+</code></pre>
+</blockquote>
+<h2>Multiple Nested Levels</h2>
+<blockquote>
+<p>Level 1: This represents a quote from a document.</p>
+<blockquote>
+<p>Level 2: This is a quote within that document.</p>
+<blockquote>
+<p>Level 3: And this is a quote within THAT quote!</p>
+<p>Notice how each level has different styling to help distinguish them.</p>
+<blockquote>
+<p>You can even go deeper if needed, though it’s rarely necessary.</p>
+</blockquote>
+<p>Back to level 3.</p>
+</blockquote>
+<p>Back to level 2.</p>
+</blockquote>
+<p>And finally back to level 1.</p>
+</blockquote>
+<h2>Email-Style Conversation</h2>
+<blockquote>
+<p><strong>Alice:</strong> Hey, did you see the report?</p>
+<blockquote>
+<p><strong>Bob:</strong> Yes, I noticed this part:</p>
+<blockquote>
+<p><strong>Report:</strong> The quarterly results show a 15% increase in productivity.</p>
+</blockquote>
+<p>What do you think about it?</p>
+</blockquote>
+<p><strong>Alice:</strong> I think it’s great! We should celebrate.</p>
+</blockquote>
+<h2>Mixed Content with Blockquotes</h2>
+<p>Here’s some regular text before the quote.</p>
+<blockquote>
+<p>This is a blockquote that includes:</p>
+<ul class="task-list">
+<li>A checklist:<ul class="task-list">
+<li>[ ] Task 1</li>
+<li>[x] Task 2</li>
+<li>[ ] Task 3</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>And a nested quote with a table:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Blockquotes</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Nesting</td>
+<td>✓</td>
+</tr>
+<tr>
+<td>Styling</td>
+<td>✓</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</blockquote>
+<p>And some regular text after the quote.</p>
+<h2>Edge Cases</h2>
+<blockquote>
+<p>Single line nested quote:</p>
+<blockquote>
+<p>Another level</p>
+<blockquote>
+<p>And another!</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<blockquote>
+<p>Interrupted nesting:</p>
+<blockquote>
+<p>Level 2</p>
+</blockquote>
+<p>Back to level 1 (note the blank line above)</p>
+<blockquote>
+<p>New level 2 section</p>
+</blockquote>
+</blockquote>
+<h2>Real-World Example: Documentation</h2>
+<blockquote>
+<p><strong>⚠️ Warning</strong></p>
+<p>This feature is experimental and may change in future releases.</p>
+<blockquote>
+<p><strong>Note from the team:</strong></p>
+<p>We’re actively working on stabilizing this API. Please report any issues you encounter.</p>
+<blockquote>
+<p><strong>Developer tip:</strong></p>
+<p>Use version pinning to avoid breaking changes:</p>
+<pre><code class="language-json">{
+  &quot;dependencies&quot;: {
+    &quot;package-name&quot;: &quot;~1.2.3&quot;
+  }
+}
+</code></pre>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2>Blockquotes with Lists</h2>
+<blockquote>
+<p>Main quote with nested lists:</p>
+<ol>
+<li>First ordered item
+<blockquote>
+<p>Quote within list item</p>
+<blockquote>
+<p>Nested quote in list</p>
+</blockquote>
+</blockquote>
+</li>
+<li>Second ordered item
+<ul>
+<li>Unordered sub-item
+<blockquote>
+<p>Quote in unordered item</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+
+</body>
+</html>

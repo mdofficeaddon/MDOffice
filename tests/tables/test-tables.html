@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-tables</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Tables Test Document</h1>
+<p>This document demonstrates table support with proper header/content alignment.</p>
+<h2>Basic Table</h2>
+<table>
+<thead>
+<tr>
+<th>Header 1</th>
+<th>Header 2</th>
+<th>Header 3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cell 1</td>
+<td>Cell 2</td>
+<td>Cell 3</td>
+</tr>
+<tr>
+<td>Cell 4</td>
+<td>Cell 5</td>
+<td>Cell 6</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Different Cell Widths</h2>
+<table>
+<thead>
+<tr>
+<th>Short</th>
+<th>Medium Column</th>
+<th>This is a Much Longer Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>X</td>
+<td>Y</td>
+<td>Z</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Variable Content Length</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>John</td>
+<td>A very long description that contains a lot of text and information about this particular person</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Jane</td>
+<td>Short desc</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Bob</td>
+<td>Medium length description here</td>
+</tr>
+</tbody>
+</table>
+<h2>Wide Table (Horizontal Scrolling Test)</h2>
+<table>
+<thead>
+<tr>
+<th>Column 1</th>
+<th>Column 2</th>
+<th>Column 3</th>
+<th>Column 4</th>
+<th>Column 5</th>
+<th>Column 6</th>
+<th>Column 7</th>
+<th>Column 8</th>
+<th>Column 9</th>
+<th>Column 10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data 1</td>
+<td>Data 2</td>
+<td>Data 3</td>
+<td>Data 4</td>
+<td>Data 5</td>
+<td>Data 6</td>
+<td>Data 7</td>
+<td>Data 8</td>
+<td>Data 9</td>
+<td>Data 10</td>
+</tr>
+<tr>
+<td>Value A</td>
+<td>Value B</td>
+<td>Value C</td>
+<td>Value D</td>
+<td>Value E</td>
+<td>Value F</td>
+<td>Value G</td>
+<td>Value H</td>
+<td>Value I</td>
+<td>Value J</td>
+</tr>
+<tr>
+<td>Item 1</td>
+<td>Item 2</td>
+<td>Item 3</td>
+<td>Item 4</td>
+<td>Item 5</td>
+<td>Item 6</td>
+<td>Item 7</td>
+<td>Item 8</td>
+<td>Item 9</td>
+<td>Item 10</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Numbers</h2>
+<table>
+<thead>
+<tr>
+<th>Product ID</th>
+<th>Price ($)</th>
+<th>Quantity</th>
+<th>Total ($)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PROD-001</td>
+<td>29.99</td>
+<td>5</td>
+<td>149.95</td>
+</tr>
+<tr>
+<td>PROD-002</td>
+<td>149.99</td>
+<td>2</td>
+<td>299.98</td>
+</tr>
+<tr>
+<td>PROD-003</td>
+<td>9.99</td>
+<td>10</td>
+<td>99.90</td>
+</tr>
+<tr>
+<td>PROD-004</td>
+<td>499.99</td>
+<td>1</td>
+<td>499.99</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Mixed Content</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Priority</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bold Feature</strong></td>
+<td>✅ Done</td>
+<td>High</td>
+<td>This works great!</td>
+</tr>
+<tr>
+<td><em>Italic Feature</em></td>
+<td>⏳ In Progress</td>
+<td>Medium</td>
+<td>Almost there</td>
+</tr>
+<tr>
+<td><code>Code Feature</code></td>
+<td>❌ Pending</td>
+<td>Low</td>
+<td>Not started yet</td>
+</tr>
+<tr>
+<td><a href="https://example.com">Link Feature</a></td>
+<td>✅ Done</td>
+<td>High</td>
+<td>Click to learn more</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Long Headers vs Short Content</h2>
+<table>
+<thead>
+<tr>
+<th>This is a Very Long Header Name</th>
+<th>Another Lengthy Header Description</th>
+<th>Short</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>B</td>
+<td>C</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>X</td>
+<td>Y</td>
+<td>Z</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Short Headers vs Long Content</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Info</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>This is a very long piece of information that extends far beyond the header width</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Another lengthy description with lots of details and information</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Short</td>
+</tr>
+</tbody>
+</table>
+<h2>Alignment Test Table</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Left Aligned</th>
+<th style="text-align:center">Center Aligned</th>
+<th style="text-align:right">Right Aligned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Left</td>
+<td style="text-align:center">Center</td>
+<td style="text-align:right">Right</td>
+</tr>
+<tr>
+<td style="text-align:left">Text on left</td>
+<td style="text-align:center">Text centered</td>
+<td style="text-align:right">Text on right</td>
+</tr>
+<tr>
+<td style="text-align:left">L</td>
+<td style="text-align:center">C</td>
+<td style="text-align:right">R</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Special Characters</h2>
+<table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Name</th>
+<th>Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&amp;</td>
+<td>Ampersand</td>
+<td><code>&amp;amp;</code></td>
+</tr>
+<tr>
+<td>&lt;</td>
+<td>Less than</td>
+<td><code>&amp;lt;</code></td>
+</tr>
+<tr>
+<td>&gt;</td>
+<td>Greater than</td>
+<td><code>&amp;gt;</code></td>
+</tr>
+<tr>
+<td>&quot;</td>
+<td>Quote</td>
+<td><code>&amp;quot;</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Minimal Table</h2>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Empty Cells</h2>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Value</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Item 1</td>
+<td>100</td>
+<td>Active</td>
+</tr>
+<tr>
+<td>Item 2</td>
+<td></td>
+<td>Pending</td>
+</tr>
+<tr>
+<td>Item 3</td>
+<td>50</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>75</td>
+<td>Done</td>
+</tr>
+</tbody>
+</table>
+<h2>Complex Data Table</h2>
+<table>
+<thead>
+<tr>
+<th>Date</th>
+<th>User</th>
+<th>Action</th>
+<th>Resource</th>
+<th>Status</th>
+<th>Duration (ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2024-01-15</td>
+<td><a href="mailto:admin@example.com">admin@example.com</a></td>
+<td>CREATE</td>
+<td>/api/users</td>
+<td>201</td>
+<td>45</td>
+</tr>
+<tr>
+<td>2024-01-15</td>
+<td><a href="mailto:user@example.com">user@example.com</a></td>
+<td>READ</td>
+<td>/api/products</td>
+<td>200</td>
+<td>12</td>
+</tr>
+<tr>
+<td>2024-01-15</td>
+<td><a href="mailto:admin@example.com">admin@example.com</a></td>
+<td>UPDATE</td>
+<td>/api/settings</td>
+<td>200</td>
+<td>89</td>
+</tr>
+<tr>
+<td>2024-01-15</td>
+<td><a href="mailto:guest@example.com">guest@example.com</a></td>
+<td>DELETE</td>
+<td>/api/temp</td>
+<td>403</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Emojis</h2>
+<table>
+<thead>
+<tr>
+<th>Status</th>
+<th>Emoji</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Success</td>
+<td>✅</td>
+<td>Task completed</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>⚠️</td>
+<td>Attention needed</td>
+</tr>
+<tr>
+<td>Error</td>
+<td>❌</td>
+<td>Failed</td>
+</tr>
+<tr>
+<td>In Progress</td>
+<td>🔄</td>
+<td>Currently working</td>
+</tr>
+<tr>
+<td>Pending</td>
+<td>⏳</td>
+<td>Waiting</td>
+</tr>
+</tbody>
+</table>
+<h2>Comparison Table</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Basic Plan</th>
+<th>Pro Plan</th>
+<th>Enterprise</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Storage</td>
+<td>10 GB</td>
+<td>100 GB</td>
+<td>Unlimited</td>
+</tr>
+<tr>
+<td>Users</td>
+<td>1</td>
+<td>10</td>
+<td>Unlimited</td>
+</tr>
+<tr>
+<td>Support</td>
+<td>Email</td>
+<td>Priority</td>
+<td>24/7</td>
+</tr>
+<tr>
+<td>Price</td>
+<td>$0/mo</td>
+<td>$29/mo</td>
+<td>Custom</td>
+</tr>
+<tr>
+<td>API Access</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Custom Domain</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Analytics</td>
+<td>Basic</td>
+<td>Advanced</td>
+<td>Enterprise</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>

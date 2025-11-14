@@ -5,32 +5,24 @@ This guide explains how to publish and update your extension on both the VS Code
 ## Prerequisites
 
 1. **VS Code Marketplace** (for VS Code/Cursor):
-  - Install `vsce` (VS Code Extension Manager):
+   - Install `vsce` (VS Code Extension Manager):
 
-     
-```
-bash
-     npm install -g @vscode/vsce
-     
+```bash
+npm install -g @vscode/vsce
 ```
 
-- Create a publisher account at [marketplace.visualstudio.com](https://marketplace.visualstudio.com/manage)
+   - Create a publisher account at [marketplace.visualstudio.com](https://marketplace.visualstudio.com/manage)
+   - Create a Personal Access Token (PAT) with marketplace publish permissions
 
-- Create a Personal Access Token (PAT) with marketplace publish permissions
+2. **Open VSX Registry** (for VSCodium and other open-source editors):
+   - Install `ovsx` CLI tool:
 
-1. **Open VSX Registry** (for VSCodium and other open-source editors):
-  - Install `ovsx` CLI tool:
-
-     
-```
-bash
-     npm install -g ovsx
-     
+```bash
+npm install -g ovsx
 ```
 
-- Create an account at [open-vsx.org](https://open-vsx.org/)
-
-- Generate a Personal Access Token from your account settings
+   - Create an account at [open-vsx.org](https://open-vsx.org/)
+   - Generate a Personal Access Token from your account settings
 
 ## Publishing Steps
 

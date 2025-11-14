@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-checklist-export</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Regular lists - Improved nesting */
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        /* First level lists */
+        body > ul, body > ol,
+        body > div > ul, body > div > ol {
+            margin-bottom: 16px;
+        }
+
+        /* Nested lists - reduce spacing */
+        li > ul, li > ol {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            padding-left: 2em;
+        }
+
+        /* List items */
+        li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        /* Nested list items have tighter spacing */
+        li li {
+            margin-bottom: 6px;
+        }
+
+        li li li {
+            margin-bottom: 4px;
+        }
+
+        /* Ordered lists - better number styling */
+        ol {
+            counter-reset: item;
+        }
+
+        ol > li {
+            position: relative;
+        }
+
+        /* Mixed list type indicators */
+        ul ul {
+            list-style-type: circle;
+        }
+
+        ul ul ul {
+            list-style-type: square;
+        }
+
+        ul ul ul ul {
+            list-style-type: disc;
+        }
+
+        /* Ordered nested lists use different styles */
+        ol ol {
+            list-style-type: lower-alpha;
+        }
+
+        ol ol ol {
+            list-style-type: lower-roman;
+        }
+
+        ol ol ol ol {
+            list-style-type: decimal;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Matching office view styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 12px;
+        }
+
+        .task-list-item {
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            position: relative;
+        }
+
+        .task-list-item:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Container for checkbox and text */
+        .task-list-item .task-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            transition: all 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item input[type="checkbox"]:hover {
+            border-color: #666;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-list-item input[type="checkbox"]:checked:hover {
+            border-color: #45a049;
+            background-color: #45a049;
+        }
+
+        /* Completed task text styling */
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        /* Wrapper for task text */
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;q2
+        }
+
+        /* NESTED TASK LISTS - Clear visual hierarchy matching office view */
+        .task-list-item > .task-list {
+            margin: 8px 0 0 0;
+            padding-left: 32px;
+            position: relative;
+        }
+
+        /* Vertical connecting line for nested items */
+        .task-list-item > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 0;
+            bottom: 4px;
+            width: 2px;
+            background: linear-gradient(to bottom, #d0d0d0 0%, #d0d0d0 90%, transparent 100%);
+            border-radius: 1px;
+        }
+
+        /* Horizontal connector from vertical line to each item */
+        .task-list-item > .task-list > .task-list-item::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 18px;
+            width: 14px;
+            height: 2px;
+            background: #d0d0d0;
+            border-radius: 1px;
+        }
+
+        /* Progressive background shading with blue tint for depth perception */
+        .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.02);
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.04);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.06);
+        }
+
+        .task-list .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.08);
+        }
+
+        /* Progressive hover states */
+        .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.08);
+        }
+
+        .task-list .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.10);
+        }
+
+        .task-list .task-list .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.12);
+        }
+
+        /* Nested task lists inside regular list items */
+        li > .task-list {
+            padding-left: 32px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 0;
+            bottom: 4px;
+            width: 2px;
+            background: linear-gradient(to bottom, #d0d0d0 0%, #d0d0d0 90%, transparent 100%);
+            border-radius: 1px;
+        }
+
+        /* Mixed lists with task lists - proper spacing */
+        ul:not(.task-list) > li > .task-list,
+        ol > li > .task-list {
+            margin-top: 8px;
+            padding-left: 24px;
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Checklist Export Test</h1>
+<p>This document tests that exported HTML checklists match the office view appearance.</p>
+<h2>Simple Checklist</h2>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Completed task</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Pending task</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Another completed task</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Another pending task</span></div></li>
+</ul>
+<h2>Nested Checklist - Single Level</h2>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Main task 1 (completed)
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Subtask 1.1 (completed)</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Subtask 1.2 (pending)</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Subtask 1.3 (completed)</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Main task 2 (pending)
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Subtask 2.1 (pending)</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Subtask 2.2 (pending)</span></div></li>
+</ul>
+</li>
+</ul>
+<h2>Deep Nesting - Multiple Levels</h2>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Project Setup
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Initialize repository
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Create Git repo</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Add .gitignore</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Create README</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Configure tools
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Install Node.js</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Install VS Code extensions
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">ESLint</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Prettier</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">GitLens</span></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Complex Project Checklist</h2>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Frontend Development</span></div>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Setup React project
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Create React App</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Install dependencies</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Configure TypeScript</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Build components
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Header component</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Navigation component</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Dashboard component
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Statistics widget</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Chart widget</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Activity feed</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Footer component</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Styling
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Setup Tailwind CSS</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Create theme</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Implement dark mode</span></div></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Backend Development</span></div>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Setup Express server
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Initialize project</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Configure middleware</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Database
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Design schema</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Create migrations
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Users table</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Posts table</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Comments table</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Seed data</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">API endpoints
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Authentication
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Login</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Register</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Password reset</span></div></li>
+</ul>
+</li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">CRUD operations
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Create</span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Read</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Update</span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Delete</span></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Mixed Content Checklist</h2>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text"><strong>Bold completed task</strong></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text"><em>Italic pending task</em></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Task with <code>code inline</code>
+<ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Nested task with <a href="https://example.com">link</a></span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Another nested task
+</span></div><ul class="task-list">
+<li class="task-list-item"><div class="task-content"><input type="checkbox" checked disabled><span class="task-text">Deep nested with <strong>bold</strong> and <em>italic</em></span></div></span></div></li>
+<li class="task-list-item"><div class="task-content"><input type="checkbox" disabled><span class="task-text">Deep nested with code: <code>npm install</code></span></div></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>Visual Features to Check</h2>
+<p>When comparing the exported HTML to the office view, verify:</p>
+<ol>
+<li><strong>Checkbox appearance</strong>: Same size (18x18), rounded corners, grey border</li>
+<li><strong>Checked state</strong>: Green background (#4CAF50) with white checkmark</li>
+<li><strong>Hover effects</strong>:
+<ul>
+<li>Checkboxes get darker border and shadow on hover</li>
+<li>Task items get subtle background highlight</li>
+</ul>
+</li>
+<li><strong>Blue tinted backgrounds</strong>: Nested items have progressive blue tint
+<ul>
+<li>Level 1: rgba(100, 100, 255, 0.02)</li>
+<li>Level 2: rgba(100, 100, 255, 0.04)</li>
+<li>Level 3: rgba(100, 100, 255, 0.06)</li>
+<li>Level 4: rgba(100, 100, 255, 0.08)</li>
+</ul>
+</li>
+<li><strong>Connecting lines</strong>:
+<ul>
+<li>Vertical gradient line on the left</li>
+<li>Horizontal connector to each item</li>
+</ul>
+</li>
+<li><strong>Strikethrough</strong>: Completed tasks have grey text with line-through</li>
+<li><strong>Spacing</strong>: Consistent padding and margins</li>
+</ol>
+<hr>
+<p><strong>Testing Instructions:</strong></p>
+<ol>
+<li>Open this file in MD Office Editor</li>
+<li>View it in the office preview (should look great)</li>
+<li>Export to HTML</li>
+<li>Open the HTML in a browser</li>
+<li>Compare the appearance - they should now match! ✨</li>
+</ol>
+
+</body>
+</html>

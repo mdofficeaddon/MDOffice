@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-math-latex</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Math and LaTeX Test Document</h1>
+<p>This document tests inline math and display math equations using $ delimiters.</p>
+<h2>Inline Math Expressions</h2>
+<p>Here is an inline equation: $E = mc^2$, which is Einstein’s famous equation.</p>
+<p>The quadratic formula is $x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}$ and it’s used frequently.</p>
+<p>Simple math: $a + b = c$ and $x^2 + y^2 = z^2$ for right triangles.</p>
+<h2>Display Math (Block)</h2>
+<p>Here’s the Pythagorean theorem in display mode:</p>
+<p>$$
+a^2 + b^2 = c^2
+$$</p>
+<p>The quadratic formula:</p>
+<p>$$
+x = \frac{-b \pm \sqrt{b^2-4ac}}{2a}
+$$</p>
+<h2>Greek Letters</h2>
+<p>Inline: $\alpha$, $\beta$, $\gamma$, $\delta$, $\epsilon$, $\theta$, $\pi$, $\sigma$, $\omega$</p>
+<p>Uppercase: $\Gamma$, $\Delta$, $\Theta$, $\Pi$, $\Sigma$, $\Omega$</p>
+<h2>Summation and Integration</h2>
+<p>Sum from 1 to n: $\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$</p>
+<p>Integral: $\int_{0}^{\infty} e^{-x} dx = 1$</p>
+<p>Display version:</p>
+<p>$$
+\sum_{i=1}^{n} i^2 = \frac{n(n+1)(2n+1)}{6}
+$$</p>
+<p>$$
+\int_{-\infty}^{\infty} e^{-x^2} dx = \sqrt{\pi}
+$$</p>
+<h2>Matrices</h2>
+<p>A 2×2 matrix inline: $\begin{pmatrix} a &amp; b \ c &amp; d \end{pmatrix}$</p>
+<p>Display matrix:</p>
+<p>$$
+A = \begin{bmatrix}
+1 &amp; 2 &amp; 3 \
+4 &amp; 5 &amp; 6 \
+7 &amp; 8 &amp; 9
+\end{bmatrix}
+$$</p>
+<h2>Fractions and Nested Operations</h2>
+<p>Simple fraction: $\frac{1}{2}$ or $\frac{3}{4}$</p>
+<p>Nested fraction: $\frac{1}{1 + \frac{1}{2}}$</p>
+<p>Complex expression:</p>
+<p>$$
+f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+$$</p>
+<h2>Mixed Math and Text</h2>
+<p>The value of $\pi$ is approximately 3.14159. When calculating the area of a circle, we use $A = \pi r^2$ where $r$ is the radius.</p>
+<p>For a circle with radius $r = 5$, the area is $A = \pi \cdot 5^2 = 25\pi \approx 78.54$ square units.</p>
+<h2>Dollar Signs vs Math</h2>
+<p>Regular dollar amounts: $100, $250.50, $1,000,000</p>
+<p>Math mode dollars: $$100$ in math mode</p>
+<p>Mixed: The price is $50, but the formula is $y = mx + b$ where $m$ is the slope.</p>
+<h2>Table with Math Expressions</h2>
+<table>
+<thead>
+<tr>
+<th>Formula</th>
+<th>Name</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$\pi$</td>
+<td>Pi</td>
+<td>3.14159</td>
+</tr>
+<tr>
+<td>$e$</td>
+<td>Euler’s number</td>
+<td>2.71828</td>
+</tr>
+<tr>
+<td>$\phi$</td>
+<td>Golden ratio</td>
+<td>1.61803</td>
+</tr>
+<tr>
+<td>$\sqrt{2}$</td>
+<td>Root 2</td>
+<td>1.41421</td>
+</tr>
+</tbody>
+</table>
+<h2>Complex Mathematical Expressions</h2>
+<p>Limit definition:</p>
+<p>$$
+\lim_{x \to \infty} \frac{1}{x} = 0
+$$</p>
+<p>Derivative:</p>
+<p>$$
+\frac{d}{dx}(x^n) = nx^{n-1}
+$$</p>
+<p>Partial derivative:</p>
+<p>$$
+\frac{\partial f}{\partial x} = \lim_{h \to 0} \frac{f(x+h, y) - f(x, y)}{h}
+$$</p>
+<h2>Set Theory and Logic</h2>
+<p>Set notation: $A \cup B$, $A \cap B$, $A \subseteq B$, $x \in A$</p>
+<p>Logical operators: $\land$ (and), $\lor$ (or), $\neg$ (not), $\implies$ (implies)</p>
+<p>Display:</p>
+<p>$$
+A \cap B = {x : x \in A \land x \in B}
+$$</p>
+<h2>Multiple Equations</h2>
+<p>$$
+\begin{aligned}
+x + y &amp;= 10 \
+2x - y &amp;= 5 \
+\therefore x &amp;= 5, y = 5
+\end{aligned}
+$$</p>
+<h2>Edge Cases</h2>
+<p>Dollar sign tests:</p>
+<ul>
+<li>Normal dollar: $</li>
+<li>Math mode: $x$</li>
+<li>Two dollars: $$inline still$$</li>
+<li>Escaped in math: $$100$</li>
+</ul>
+<p>Multiple inline: $a$, $b$, $c$ all on one line.</p>
+<p>Back-to-back: $x$$y$ (might cause issues)</p>
+<p>With text between: $x$ and $y$ equals $z$</p>
+
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-tables-special-chars</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Tables with Special Characters Test</h1>
+<p>This document tests various special characters in markdown tables.</p>
+<h2>Basic Table with Dollar Signs</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Price</th>
+<th>Quantity</th>
+<th>Total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apple</td>
+<td>$2.50</td>
+<td>3</td>
+<td>$7.50</td>
+</tr>
+<tr>
+<td>Banana</td>
+<td>$1.25</td>
+<td>5</td>
+<td>$6.25</td>
+</tr>
+<tr>
+<td>Orange</td>
+<td>$3.00</td>
+<td>2</td>
+<td>$6.00</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td>-</td>
+<td><strong>10</strong></td>
+<td><strong>$19.75</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Pipe Characters (Escaped)</h2>
+<table>
+<thead>
+<tr>
+<th>Column A</th>
+<th>Column B</th>
+<th>Column C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal text</td>
+<td>Text with | pipe</td>
+<td>More text</td>
+</tr>
+<tr>
+<td>Option 1 | Option 2</td>
+<td>Value</td>
+<td>Description</td>
+</tr>
+<tr>
+<td><code>code | with pipe</code></td>
+<td><em>italic</em></td>
+<td><strong>bold</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Backslashes and Special Chars</h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C:\Users\Documents\</td>
+<td>Windows path</td>
+<td>1.5GB</td>
+</tr>
+<tr>
+<td>/home/user/docs/</td>
+<td>Linux path</td>
+<td>2.3GB</td>
+</tr>
+<tr>
+<td>\\server\share\</td>
+<td>Network path</td>
+<td>500MB</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Markdown Formatting</h2>
+<table>
+<thead>
+<tr>
+<th><strong>Header 1</strong></th>
+<th><em>Header 2</em></th>
+<th><s>Header 3</s></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bold text</strong></td>
+<td><em>Italic text</em></td>
+<td><s>Strikethrough</s></td>
+</tr>
+<tr>
+<td><code>code snippet</code></td>
+<td><a href="https://example.com">Link</a></td>
+<td><img src="https://via.placeholder.com/20" alt="img"></td>
+</tr>
+<tr>
+<td><em><strong>Bold+Italic</strong></em></td>
+<td><code>inline code</code></td>
+<td>Normal</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Code and Backticks</h2>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Syntax</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Print</td>
+<td><code>print()</code></td>
+<td><code>print(&quot;Hello&quot;)</code></td>
+</tr>
+<tr>
+<td>Variable</td>
+<td><code>var x = 5</code></td>
+<td><code>let name = &quot;John&quot;</code></td>
+</tr>
+<tr>
+<td>Comment</td>
+<td><code>// comment</code></td>
+<td><code># Python comment</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Currency Symbols</h2>
+<table>
+<thead>
+<tr>
+<th>Currency</th>
+<th>Symbol</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>US Dollar</td>
+<td>$</td>
+<td>$100.00</td>
+</tr>
+<tr>
+<td>Euro</td>
+<td>€</td>
+<td>€85.50</td>
+</tr>
+<tr>
+<td>British Pound</td>
+<td>£</td>
+<td>£75.25</td>
+</tr>
+<tr>
+<td>Japanese Yen</td>
+<td>¥</td>
+<td>¥10,000</td>
+</tr>
+<tr>
+<td>Bitcoin</td>
+<td>₿</td>
+<td>₿0.0025</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Percentage and Math Symbols</h2>
+<table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Symbol</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Addition</td>
+<td>5 + 3</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Subtraction</td>
+<td>10 - 4</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Multiplication</td>
+<td>6 × 7</td>
+<td>42</td>
+</tr>
+<tr>
+<td>Division</td>
+<td>20 ÷ 4</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Percentage</td>
+<td>25%</td>
+<td>0.25</td>
+</tr>
+<tr>
+<td>Greater than</td>
+<td>10 &gt; 5</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Less than</td>
+<td>3 &lt; 7</td>
+<td>true</td>
+</tr>
+<tr>
+<td>Equals</td>
+<td>2 + 2 = 4</td>
+<td>true</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with HTML Entities</h2>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Code</th>
+<th>Display</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Less than</td>
+<td><code>&amp;lt;</code></td>
+<td>&lt;</td>
+</tr>
+<tr>
+<td>Greater than</td>
+<td><code>&amp;gt;</code></td>
+<td>&gt;</td>
+</tr>
+<tr>
+<td>Ampersand</td>
+<td><code>&amp;amp;</code></td>
+<td>&amp;</td>
+</tr>
+<tr>
+<td>Quote</td>
+<td><code>&amp;quot;</code></td>
+<td>&quot;</td>
+</tr>
+<tr>
+<td>Non-breaking space</td>
+<td><code>&amp;nbsp;</code></td>
+<td> </td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Emoji and Unicode</h2>
+<table>
+<thead>
+<tr>
+<th>Category</th>
+<th>Example</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Emoji</td>
+<td>😀 🎉 ✅</td>
+<td>Happy, celebration, check</td>
+</tr>
+<tr>
+<td>Arrows</td>
+<td>→ ← ↑ ↓</td>
+<td>Direction arrows</td>
+</tr>
+<tr>
+<td>Math</td>
+<td>∑ ∫ √ ∞</td>
+<td>Sum, integral, root, infinity</td>
+</tr>
+<tr>
+<td>Symbols</td>
+<td>© ® ™ §</td>
+<td>Copyright, registered, trademark</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Mixed Alignment</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Left-aligned</th>
+<th style="text-align:center">Center-aligned</th>
+<th style="text-align:right">Right-aligned</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">$10.00</td>
+<td style="text-align:center">$20.00</td>
+<td style="text-align:right">$30.00</td>
+</tr>
+<tr>
+<td style="text-align:left">Text left</td>
+<td style="text-align:center">Text center</td>
+<td style="text-align:right">Text right</td>
+</tr>
+<tr>
+<td style="text-align:left">100</td>
+<td style="text-align:center">200</td>
+<td style="text-align:right">300</td>
+</tr>
+</tbody>
+</table>
+<h2>Complex Table with Nested Formatting</h2>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Code Example</th>
+<th>Price</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Bold API</strong></td>
+<td><code>**text**</code></td>
+<td>$0.00/mo</td>
+<td>✅ Free</td>
+</tr>
+<tr>
+<td><em>Italic Pro</em></td>
+<td><code>*text*</code></td>
+<td>$9.99/mo</td>
+<td>🚧 Beta</td>
+</tr>
+<tr>
+<td><code>Code Block</code></td>
+<td><code>`code`</code></td>
+<td>$19.99/mo</td>
+<td>✅ Live</td>
+</tr>
+<tr>
+<td><s>Deprecated</s></td>
+<td><code>~~text~~</code></td>
+<td><s>$5.00/mo</s></td>
+<td>❌ Removed</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Long Text and Wrapping</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Description</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>001</td>
+<td>This is a very long description that might wrap in the table cell depending on the renderer settings</td>
+<td>Additional notes here</td>
+</tr>
+<tr>
+<td>002</td>
+<td>Short</td>
+<td>Simple note</td>
+</tr>
+<tr>
+<td>003</td>
+<td>Multiple $100 transactions: $25.50 + $35.75 + $38.75 = $100.00</td>
+<td>Check accounting</td>
+</tr>
+</tbody>
+</table>
+<h2>Edge Case: Empty Cells and Special Patterns</h2>
+<table>
+<thead>
+<tr>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$</td>
+<td>$$</td>
+<td>$$$</td>
+<td>$$$$</td>
+</tr>
+<tr>
+<td></td>
+<td>Empty</td>
+<td></td>
+<td>Mixed</td>
+</tr>
+<tr>
+<td>|</td>
+<td>||</td>
+<td>|||</td>
+<td>Pipes</td>
+</tr>
+<tr>
+<td><code>$</code></td>
+<td><code>$$</code></td>
+<td>Text</td>
+<td>$100</td>
+</tr>
+</tbody>
+</table>
+<h2>Table with Scientific Notation</h2>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Scientific</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1,000,000</td>
+<td>1.0 × 10^6</td>
+<td>One million</td>
+</tr>
+<tr>
+<td>0.000001</td>
+<td>1.0 × 10^-6</td>
+<td>One millionth</td>
+</tr>
+<tr>
+<td>6.022 × 10^23</td>
+<td>-</td>
+<td>Avogadro’s number</td>
+</tr>
+<tr>
+<td>$1.5 × 10^3</td>
+<td>-</td>
+<td>$1,500</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>

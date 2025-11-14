@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-escape-sequences</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Escape Sequences and Special Characters Test</h1>
+<p>This document tests various escape sequences and special character handling.</p>
+<h2>Backslash Escapes</h2>
+<h3>Basic Markdown Characters</h3>
+<ul>
+<li>Backslash: \</li>
+<li>Backtick: `</li>
+<li>Asterisk: *</li>
+<li>Underscore: _</li>
+<li>Curly braces: { }</li>
+<li>Square brackets: [ ]</li>
+<li>Angle brackets: &lt; &gt;</li>
+<li>Parentheses: ( )</li>
+<li>Hash: #</li>
+<li>Plus: +</li>
+<li>Minus: -</li>
+<li>Dot: .</li>
+<li>Exclamation: !</li>
+<li>Pipe: |</li>
+</ul>
+<h3>In Context</h3>
+<p>This should *not* be italic or bold: *text* and **text**</p>
+<p>This should [not] be a link: [text](url)</p>
+<p>This should # not be a header: # Not a Header</p>
+<h2>Code Blocks and Escaping</h2>
+<p>Inline code can contain special chars: <code>**not bold** *not italic* [not a link]</code></p>
+<p>Fenced code block:</p>
+<pre><code>No escaping needed here:
+** This is not bold **
+* This is not a bullet
+# This is not a header
+</code></pre>
+<h2>Backslash Handling</h2>
+<p>Single backslash: <br>
+Double backslash: \
+Triple backslash: \<br>
+Four backslashes: \\</p>
+<p>Windows path: C:\Users\Documents\file.txt
+Linux path: /home/user/documents/file.txt
+UNC path: \\server\share\folder\</p>
+<h2>Special Characters in Lists</h2>
+<ul>
+<li>Item with * asterisk</li>
+<li>Item with _ underscore</li>
+<li>Item with ` backtick</li>
+<li>Item with # hash
+<ul>
+<li>Nested with * asterisk</li>
+<li>Nested with \ backslash</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>Numbered with * asterisk</li>
+<li>Numbered with [ brackets ]</li>
+<li>Numbered with # hash</li>
+</ol>
+<h2>Inline Code vs Escaping</h2>
+<p>Compare:</p>
+<ul>
+<li>Escaped: **bold**</li>
+<li>In code: <code>**bold**</code></li>
+<li>Actual: <strong>bold</strong></li>
+</ul>
+<h2>HTML Entities and Special Symbols</h2>
+<table>
+<thead>
+<tr>
+<th>Entity</th>
+<th>Display</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&amp;lt;</code></td>
+<td>&lt;</td>
+<td>Less than</td>
+</tr>
+<tr>
+<td><code>&amp;gt;</code></td>
+<td>&gt;</td>
+<td>Greater than</td>
+</tr>
+<tr>
+<td><code>&amp;amp;</code></td>
+<td>&amp;</td>
+<td>Ampersand</td>
+</tr>
+<tr>
+<td><code>&amp;quot;</code></td>
+<td>&quot;</td>
+<td>Quotation mark</td>
+</tr>
+<tr>
+<td><code>&amp;apos;</code></td>
+<td>'</td>
+<td>Apostrophe</td>
+</tr>
+<tr>
+<td><code>&amp;nbsp;</code></td>
+<td> </td>
+<td>Non-breaking space</td>
+</tr>
+<tr>
+<td><code>&amp;copy;</code></td>
+<td>©</td>
+<td>Copyright</td>
+</tr>
+<tr>
+<td><code>&amp;reg;</code></td>
+<td>®</td>
+<td>Registered</td>
+</tr>
+<tr>
+<td><code>&amp;trade;</code></td>
+<td>™</td>
+<td>Trademark</td>
+</tr>
+</tbody>
+</table>
+<h2>URL Encoding</h2>
+<p>Normal URL: <a href="https://example.com/page?param=value&amp;other=test">https://example.com/page?param=value&amp;other=test</a></p>
+<p>URL with spaces: <a href="https://example.com/page%20with%20spaces">https://example.com/page with spaces</a></p>
+<p>URL with special chars: <a href="https://example.com/search?q=hello+world&amp;filter=new">https://example.com/search?q=hello+world&amp;filter=new</a></p>
+<h2>Parentheses and Brackets</h2>
+<p>Regular: (text in parentheses) and [text in brackets]</p>
+<p>Escaped: (not italic) and [not a reference]</p>
+<p>Mixed: (some <strong>bold</strong> text) and [some <em>italic</em> text]</p>
+<p>Nested: ((double parentheses)) and [[double brackets]]</p>
+<h2>Underscores and Emphasis</h2>
+<p>Regular emphasis: <em>italic</em> and <strong>bold</strong></p>
+<p>With escaping: _not italic_ and __not bold__</p>
+<p>In code: <code>_variable_name</code> and <code>__private_method</code></p>
+<h2>Complex Escaping Scenarios</h2>
+<h3>Mixed Escaping</h3>
+<p>Normal <strong>bold</strong> vs escaped **not bold**</p>
+<p>Normal <em>italic</em> vs escaped *not italic*</p>
+<p>Normal <code>code</code> vs `not code`</p>
+<h3>Backslash Before Special Syntax</h3>
+<p>Backslash before link: [text](url)</p>
+<p>Backslash before image: ![alt](src)</p>
+<p>Backslash before code: ```not a code block```</p>
+<h3>Multiple Levels</h3>
+<p>\<em>nested escaping</em>\ - which parts render?</p>
+<p>**\*triple layer\*** - test parsing</p>
+<h2>Regular Expressions in Code</h2>
+<p>Regex patterns need careful handling:</p>
+<ul>
+<li><code>\d+</code> - matches digits</li>
+<li><code>\w*</code> - matches word characters</li>
+<li><code>\.</code> - matches literal dot</li>
+<li><code>[a-z]+</code> - character class</li>
+<li><code>(group)</code> - capturing group</li>
+<li><code>^start</code> and <code>end$</code> - anchors</li>
+</ul>
+<p>In text: The pattern \d+ matches one or more digits.</p>
+<h2>Quotation Marks</h2>
+<p>Straight quotes: “double” and ‘single’</p>
+<p>Curly quotes: “double” and ‘single’</p>
+<p>Backticks: <code>code quotes</code></p>
+<p>Mixed: “She said, ‘Hello’ to me”</p>
+<h2>Dashes and Hyphens</h2>
+<p>Hyphen: -
+En dash: –
+Em dash: —
+Minus: −</p>
+<p>In context: This is a hyphen-separated-word.</p>
+<p>Date range: 2020–2023</p>
+<p>Parenthetical thought—like this—uses em dash.</p>
+<h2>Ampersands</h2>
+<p>In text: Tom &amp; Jerry, Research &amp; Development</p>
+<p>In code: <code>if (x &amp;&amp; y)</code> or <code>SELECT * FROM table WHERE a &amp; b</code></p>
+<p>Escaped: &amp;</p>
+<p>HTML entity: &amp;</p>
+<h2>Angle Brackets and Comparison</h2>
+<p>Math: 5 &lt; 10 and 20 &gt; 15</p>
+<p>HTML-like: &lt;tag&gt; or <tag></p>
+<p>Generic: List&lt;String&gt; in Java</p>
+<p>Comparison operators: <code>if (x &lt; y &amp;&amp; y &gt; z)</code></p>
+<h2>Edge Cases with Escaping</h2>
+<p>Empty escape: \ (backslash at end)</p>
+<p>Double escape: \ becomes single \</p>
+<p>Escape before nothing special: \a \b \c</p>
+<p>Escape in URL: <code>https://example.com/path\?param</code></p>
+<p>Mixed: <strong>bold with * escaped asterisk</strong> inside</p>
+<h2>Unicode and Emoji</h2>
+<p>Emoji: 🎉 😀 ✅ ❌ 🚀</p>
+<p>Math symbols: ∑ ∫ √ ∞ ≠ ≤ ≥</p>
+<p>Arrows: → ← ↑ ↓ ↔ ⇒</p>
+<p>Shapes: ★ ☆ ○ ● ◆ ◇ ■ □</p>
+<p>Currency: $ € £ ¥ ₹ ₽ ₿</p>
+<h2>Zero-Width and Invisible Characters</h2>
+<p>Normal: text with spaces</p>
+<p>With ZWSP: text​with​zero​width​spaces (might not be visible)</p>
+<p>With NBSP: text with non-breaking spaces</p>
+
+</body>
+</html>

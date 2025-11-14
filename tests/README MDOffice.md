@@ -10,43 +10,43 @@ Transform your VS Code or Cursor into a powerful **Office-like markdown editor**
 
 **Right-click any markdown file to open with MDOffice:**
 
-![Right Click to Open](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/1%20-%20Right%20Click%20to%20Open%20with%20MDOffice%20-%20Markdown%20Office%20Editor.png)
+![Right Click to Open](screenshots/1%20-%20Right%20Click%20to%20Open%20with%20MDOffice%20-%20Markdown%20Office%20Editor.png)
 
 ### Split View - Edit and Preview Side-by-Side
 
 **Real-time preview with synchronized scrolling:**
 
-![Split View](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/2%20%20-%20Split%20View.png)
+![Split View](screenshots/2%20%20-%20Split%20View.png)
 
 ### Editor View - Focus on Content
 
 **Clean editing interface with markdown syntax:**
 
-![Editor View](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/3%20-%20Editor%20View.png)
+![Editor View](screenshots/3%20-%20Editor%20View.png)
 
 ### Office View - WYSIWYG Experience
 
 **Edit directly in the preview with full formatting support:**
 
-![Office View](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/4%20-%20Office%20View.png)
+![Office View](screenshots/4%20-%20Office%20View.png)
 
 ### Easy Access to Settings
 
 **Quick access to all customization options:**
 
-![Settings Access](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/5%20-%20Easy%20to%20navigate%20to%20settings.png)
+![Settings Access](screenshots/5%20-%20Easy%20to%20navigate%20to%20settings.png)
 
 ### Comprehensive Settings
 
 **Fine-tune every aspect of your editing experience:**
 
-![Settings Page](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/6-%20Settings%20page%20preview.png)
+![Settings Page](screenshots/6-%20Settings%20page%20preview.png)
 
 ### Opt-in Default Editor
 
 **Choose when to use MDOffice - deactivated by default:**
 
-![Default Editor Option](https://raw.githubusercontent.com/mdofficeaddon/MDOffice/main/screenshots/7%20-%20Open%20as%20Default%20deactivated%20by%20default.png)
+![Default Editor Option](screenshots/7%20-%20Open%20as%20Default%20deactivated%20by%20default.png)
 
 ## ✨ Features
 
@@ -88,11 +88,6 @@ Transform your VS Code or Cursor into a powerful **Office-like markdown editor**
 - Real-time markdown rendering
 - **✨ NEW: Editable Preview**: Edit directly in preview mode with full formatting support
 - **Synchronized scrolling** with toggle control
-- **✨ NEW: Smart Link Navigation**: Click-to-open markdown files and anchor links
-  - Internal file links with visual indicators
-  - Anchor navigation to headings
-  - Combined file + anchor support
-  - Automatic heading ID generation
 - GitHub-flavored markdown support
 - Syntax highlighting for code blocks
 - Dark theme support
@@ -291,82 +286,6 @@ This is perfect for:
 - ✅ Auto-organization in `images/` folder
 
 **See [IMAGE_SUPPORT_IMPROVEMENTS.md](IMAGE_SUPPORT_IMPROVEMENTS.md) for detailed documentation.**
-
----
-
-### Enhanced Link Support (NEW! v0.2.7)
-
-**MDOffice now includes intelligent link handling for markdown files and anchor navigation!**
-
-#### Smart Link Types:
-
-1. **📄 Markdown File Links** (Green with 📄 icon):
-   - Link to other `.md` or `.markdown` files
-   - Automatically opens in MDOffice editor
-   - Example: `[See Documentation](./docs/guide.md)`
-   - Supports relative paths: `../README.md`, `./subfolder/notes.md`
-   - Visual distinction with green color
-
-2. **🔗 Anchor Links** (Purple):
-   - Jump to specific headings within the same document
-   - Example: `[Go to Installation](#installation)`
-   - Smooth scrolling to target heading
-   - Works with all heading levels (H1-H6)
-
-3. **📄 File + Anchor Combo**:
-   - Open another file AND jump to a specific section
-   - Example: `[API Reference](./api.md#authentication)`
-   - Opens the file in MDOffice then scrolls to the heading
-   - Perfect for documentation navigation
-
-4. **🌐 External Links**:
-   - HTTP/HTTPS links open in browser
-   - Example: `[GitHub](https://github.com)`
-   - Opens in new tab with security attributes
-
-#### How It Works:
-
-- **Automatic Heading IDs**: All headings automatically get slugified IDs
-  - `## Getting Started` → `id="getting-started"`
-  - Works with special characters: `## API & SDK` → `id="api-sdk"`
-
-- **Click to Navigate**: Simply click any markdown file link in the preview
-  - Relative paths resolved automatically
-  - Files open in MDOffice editor
-  - Anchor positions highlighted briefly
-
-- **Visual Feedback**:
-  - Hover effects show you where links go
-  - Green for internal docs, purple for anchors, blue for web
-  - Smooth scrolling animations
-
-#### Example Link Formats:
-
-```markdown
-<!-- Internal file links -->
-[User Guide](./docs/user-guide.md)
-[API Docs](../api/reference.md)
-
-<!-- Anchor links (same file) -->
-[Jump to Features](#features)
-[See Installation](#installation)
-
-<!-- File + Anchor (different file) -->
-[Setup Instructions](./docs/setup.md#requirements)
-[API Authentication](../api/reference.md#authentication)
-
-<!-- External links -->
-[Visit Website](https://example.com)
-[GitHub Repo](https://github.com/user/repo)
-```
-
-#### Benefits:
-
-- ✅ **Navigate documentation** like a wiki
-- ✅ **Build interconnected** markdown notes
-- ✅ **Quick reference** between related files
-- ✅ **Professional documentation** structure
-- ✅ **Intuitive visual cues** for link types
 
 ---
 

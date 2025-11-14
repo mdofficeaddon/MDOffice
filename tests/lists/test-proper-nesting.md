@@ -32,6 +32,7 @@
   - [ ] Level 2 - Nested task
     - [x] Level 3 - Completed nested
       - [ ] Level 4 - Very nested task
+
       - [ ]
 
 ### Exemple 5: Retour aux niveaux supérieurs
@@ -39,7 +40,8 @@
 1. Level 1 - First
   - Level 2 - Nested
     - Level 3 - Deep
-2. Level 2 - Back to level 2
+
+1. Level 2 - Back to level 2
 
 1. Level 1 - Back to level 1
 

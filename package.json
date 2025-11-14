@@ -1,9 +1,9 @@
 {
   "name": "md-office-editor",
   "displayName": "MDOffice - Markdown Office Editor",
-  "description": "Transform VS Code into a powerful markdown editor with Office-like interface, WYSIWYG preview editing, rich formatting toolbar, find & replace, and PDF/HTML export",
-  "version": "0.2.5",
-  "publisher": "06401f15-a30d-6a97-82a3-8ca0e379c4eb",
+  "description": "Transform VS Code into a powerful markdown editor with Office-like interface, WYSIWYG preview editing, smart link navigation, rich formatting toolbar, find & replace, and PDF/HTML export",
+  "version": "0.2.9",
+  "publisher": "MDOffice",
   "license": "MIT",
   "icon": "assets/icons/icon.png",
   "galleryBanner": {
@@ -89,6 +89,16 @@
       {
         "command": "mdOfficeEditor.toggleFocusMode",
         "title": "Toggle Focus Mode"
+      },
+      {
+        "command": "mdOfficeEditor.openSettings",
+        "title": "MDOffice: Open Settings",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "mdOfficeEditor.toggleDefaultEditor",
+        "title": "MDOffice: Toggle as Default Markdown Editor",
+        "icon": "$(star)"
       }
     ],
     "keybindings": [
@@ -117,6 +127,30 @@
           "when": "resourceLangId == markdown",
           "command": "mdOfficeEditor.openEditor",
           "group": "1_open"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "activeCustomEditorId == 'mdOfficeEditor.markdownEditor'",
+          "command": "mdOfficeEditor.openSettings",
+          "group": "navigation",
+          "alt": "mdOfficeEditor.openSettings"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "mdOfficeEditor.openSettings"
+        },
+        {
+          "command": "mdOfficeEditor.toggleDefaultEditor"
+        },
+        {
+          "command": "mdOfficeEditor.toggleView",
+          "when": "activeCustomEditorId == 'mdOfficeEditor.markdownEditor'"
+        },
+        {
+          "command": "mdOfficeEditor.toggleFocusMode",
+          "when": "activeCustomEditorId == 'mdOfficeEditor.markdownEditor'"
         }
       ]
     },
@@ -238,6 +272,11 @@
           "type": "string",
           "default": "",
           "description": "Path to custom CSS file for styling the document"
+        },
+        "mdOfficeEditor.openAsDefault": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically open all markdown files with MDOffice editor instead of the default text editor"
         }
       }
     }

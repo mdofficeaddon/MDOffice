@@ -10,6 +10,8 @@ interface WebviewSettings {
     documentTheme: string;
     wordCountGoal: number;
     showReadingTime: boolean;
+    documentUri?: string;
+    documentDir?: string;
 }
 
 export function getWebviewContent(
@@ -24,7 +26,7 @@ export function getWebviewContent(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource} 'unsafe-inline'; script-src 'nonce-${nonce}'; img-src ${webview.cspSource} data: https: http: file:;">
     <title>MDOffice - Markdown Office Editor</title>
     <style>
         * {
@@ -383,29 +385,154 @@ export function getWebviewContent(
         #preview .task-list {
             list-style-type: none;
             padding-left: 0;
+            margin-bottom: 12px;
         }
 
         #preview .task-list-item {
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            position: relative;
+        }
+
+        #preview .task-list-item:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Container for checkbox and text (not nested lists) */
+        #preview .task-list-item .task-content {
             display: flex;
             align-items: flex-start;
-            gap: 8px;
+            gap: 10px;
         }
 
         #preview .task-list-item input[type="checkbox"] {
-            margin-top: 4px;
+            margin-top: 3px;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            transition: all 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        #preview .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        #preview .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
         }
         
         #preview .task-list-item input[type="checkbox"]:hover {
-            opacity: 0.8;
+            border-color: #666;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
         }
 
-        /* Nested task lists */
-        #preview li > .task-list {
-            padding-left: 24px;
+        #preview .task-list-item input[type="checkbox"]:checked:hover {
+            border-color: #45a049;
+            background-color: #45a049;
+        }
+
+        /* Completed task text styling */
+        #preview .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        /* Wrapper for task text */
+        #preview .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        /* NESTED TASK LISTS - Clear visual hierarchy */
+        /* Each nested level adds cumulative indentation */
+        #preview .task-list-item > .task-list {
+            margin: 8px 0 0 0;
+            padding-left: 32px;
+            position: relative;
+        }
+
+        /* Vertical connecting line for nested items */
+        #preview .task-list-item > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 0;
+            bottom: 4px;
+            width: 2px;
+            background: linear-gradient(to bottom, #d0d0d0 0%, #d0d0d0 90%, transparent 100%);
+            border-radius: 1px;
+        }
+
+        /* Horizontal connector from vertical line to each item */
+        #preview .task-list-item > .task-list > .task-list-item::before {
+            content: '';
+            position: absolute;
+            left: -18px;
+            top: 18px;
+            width: 14px;
+            height: 2px;
+            background: #d0d0d0;
+            border-radius: 1px;
+        }
+
+        /* Progressive background shading for depth perception */
+        #preview .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.02);
+        }
+
+        #preview .task-list .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.04);
+        }
+
+        #preview .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.06);
+        }
+
+        #preview .task-list .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(100, 100, 255, 0.08);
+        }
+
+        /* Progressive hover states */
+        #preview .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.08);
+        }
+
+        #preview .task-list .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.10);
+        }
+
+        #preview .task-list .task-list .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.12);
+        }
+
+        #preview .task-list .task-list .task-list .task-list .task-list-item:hover {
+            background-color: rgba(100, 100, 255, 0.14);
+        }
+
+        /* Visual aid: slightly smaller font for very deep nesting */
+        #preview .task-list .task-list .task-list .task-list-item {
+            font-size: 0.98em;
+        }
+
+        #preview .task-list .task-list .task-list .task-list .task-list-item {
+            font-size: 0.96em;
         }
 
         #preview code {
@@ -500,6 +627,35 @@ export function getWebviewContent(
             text-decoration: underline;
         }
 
+        /* Markdown file links - special styling */
+        #preview a.md-file-link {
+            color: #067d17; /* Green for internal file links */
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        #preview a.md-file-link:hover {
+            color: #05a01f;
+            background: rgba(6, 125, 23, 0.1);
+            text-decoration: underline;
+        }
+
+        #preview a.md-file-link::before {
+            content: "📄 ";
+            opacity: 0.7;
+        }
+
+        /* Anchor links within document */
+        #preview a.anchor-link {
+            color: #7c3aed; /* Purple for anchor links */
+            cursor: pointer;
+        }
+
+        #preview a.anchor-link:hover {
+            color: #9333ea;
+            background: rgba(124, 58, 237, 0.1);
+        }
+
         #preview img {
             max-width: 100%;
             height: auto;
@@ -592,6 +748,33 @@ export function getWebviewContent(
             background: #2a2a2a;
         }
 
+        /* Dark theme link styles */
+        body.dark-theme #preview a {
+            color: #4fc3f7;
+        }
+
+        body.dark-theme #preview a:hover {
+            color: #81d4fa;
+        }
+
+        body.dark-theme #preview a.md-file-link {
+            color: #66bb6a;
+        }
+
+        body.dark-theme #preview a.md-file-link:hover {
+            color: #81c784;
+            background: rgba(102, 187, 106, 0.2);
+        }
+
+        body.dark-theme #preview a.anchor-link {
+            color: #ba68c8;
+        }
+
+        body.dark-theme #preview a.anchor-link:hover {
+            color: #ce93d8;
+            background: rgba(186, 104, 200, 0.2);
+        }
+
         body.dark-theme #preview table tr:nth-child(odd) {
             background: #2d2d2d;
         }
@@ -602,6 +785,73 @@ export function getWebviewContent(
 
         body.dark-theme #preview img {
             border-color: #505050;
+        }
+
+        /* Dark theme - Task lists (checklists) */
+        body.dark-theme #preview .task-list-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        body.dark-theme #preview .task-list-item input[type="checkbox"] {
+            background-color: #2d2d2d;
+            border-color: #666;
+        }
+
+        body.dark-theme #preview .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        body.dark-theme #preview .task-list-item input[type="checkbox"]:hover {
+            border-color: #999;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-theme #preview .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+        }
+
+        /* Dark theme - nested task lists with proportional indentation */
+        body.dark-theme #preview li > .task-list {
+            padding-left: 32px;
+        }
+
+        body.dark-theme #preview .task-list .task-list li > .task-list {
+            padding-left: 32px;
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list li > .task-list {
+            padding-left: 32px;
+        }
+
+        body.dark-theme #preview li > .task-list::before {
+            background: linear-gradient(to bottom, #404040 0%, #404040 100%);
+            left: 12px;
+            bottom: 6px;
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list-item {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list-item:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list .task-list-item:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list .task-list-item {
+            font-size: 0.98em;
+        }
+
+        body.dark-theme #preview .task-list .task-list .task-list .task-list .task-list-item {
+            font-size: 0.96em;
         }
 
         /* Focus mode styles */
@@ -964,6 +1214,10 @@ export function getWebviewContent(
 
     <script nonce="${nonce}">
         const vscode = acquireVsCodeApi();
+        
+        // Document configuration for image path resolution
+        const documentDir = ${settings.documentDir ? `'${settings.documentDir}'` : 'null'};
+        
         const editor = document.getElementById('editor');
         const preview = document.getElementById('preview');
         const viewMode = document.getElementById('view-mode');
@@ -1133,30 +1387,123 @@ export function getWebviewContent(
 
             html = processedLines.join('\\n');
 
-            // Headers
-            html = html.replace(/^######\\s+(.*)$/gm, '<h6>$1</h6>');
-            html = html.replace(/^#####\\s+(.*)$/gm, '<h5>$1</h5>');
-            html = html.replace(/^####\\s+(.*)$/gm, '<h4>$1</h4>');
-            html = html.replace(/^###\\s+(.*)$/gm, '<h3>$1</h3>');
-            html = html.replace(/^##\\s+(.*)$/gm, '<h2>$1</h2>');
-            html = html.replace(/^#\\s+(.*)$/gm, '<h1>$1</h1>');
+            // Headers with automatic ID generation for anchor links
+            // Function to generate slug from heading text
+            const generateSlug = (text) => {
+                return text.toLowerCase()
+                    .replace(/<[^>]*>/g, '') // Remove HTML tags
+                    .replace(/[^a-z0-9\\s-]/g, '') // Remove special chars
+                    .replace(/\\s+/g, '-') // Replace spaces with hyphens
+                    .replace(/-+/g, '-') // Replace multiple hyphens with single
+                    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+            };
+            
+            html = html.replace(/^######\\s+(.*)$/gm, (match, text) => \`<h6 id="\${generateSlug(text)}">\${text}</h6>\`);
+            html = html.replace(/^#####\\s+(.*)$/gm, (match, text) => \`<h5 id="\${generateSlug(text)}">\${text}</h5>\`);
+            html = html.replace(/^####\\s+(.*)$/gm, (match, text) => \`<h4 id="\${generateSlug(text)}">\${text}</h4>\`);
+            html = html.replace(/^###\\s+(.*)$/gm, (match, text) => \`<h3 id="\${generateSlug(text)}">\${text}</h3>\`);
+            html = html.replace(/^##\\s+(.*)$/gm, (match, text) => \`<h2 id="\${generateSlug(text)}">\${text}</h2>\`);
+            html = html.replace(/^#\\s+(.*)$/gm, (match, text) => \`<h1 id="\${generateSlug(text)}">\${text}</h1>\`);
 
-            // Bold
+            // Images - with relative path resolution (MUST be BEFORE links!)
+            html = html.replace(/!\\[([^\\]]*)\\]\\(([^\\)]+)\\)/g, (match, alt, src) => {
+                let resolvedSrc = src;
+                
+                // Check if it's a relative path (not http://, https://, data:, or file://)
+                if (documentDir && 
+                    !src.startsWith('http://') && 
+                    !src.startsWith('https://') && 
+                    !src.startsWith('data:') && 
+                    !src.startsWith('file://') &&
+                    !src.startsWith('vscode-resource:') &&
+                    !src.startsWith('vscode-webview-resource:')) {
+                    
+                    // Convert relative path to webview URI
+                    // Remove leading ./ if present
+                    let cleanSrc = src.startsWith('./') ? src.substring(2) : src;
+                    
+                    // Decode URL-encoded characters (like %20 for spaces)
+                    try {
+                        cleanSrc = decodeURIComponent(cleanSrc);
+                    } catch (e) {
+                        // If decoding fails, use original
+                    }
+                    
+                    // Build the full path
+                    // Note: documentDir already ends without trailing slash
+                    resolvedSrc = documentDir + '/' + cleanSrc;
+                    
+                    console.log('[MDOffice] Image path resolution:', {
+                        original: src,
+                        cleaned: cleanSrc,
+                        documentDir: documentDir,
+                        resolved: resolvedSrc
+                    });
+                }
+                
+                return \`<img src="\${resolvedSrc}" alt="\${alt}" onerror="console.error('Failed to load image:', '\${resolvedSrc}'); this.style.border='2px solid red';">\`;
+            });
+
+            // Links (MUST be AFTER images and BEFORE bold/italic to preserve underscores in URLs!) - Enhanced with file link support
+            html = html.replace(/\\[([^\\]]+)\\]\\(([^\\)]+)\\)/g, (match, text, href) => {
+                // Check if it's a relative file link (markdown or other text files)
+                const isRelativeFile = !href.startsWith('http://') && 
+                                      !href.startsWith('https://') && 
+                                      !href.startsWith('mailto:') && 
+                                      !href.startsWith('#') &&
+                                      !href.startsWith('data:');
+                
+                // Check if it's a markdown file link
+                const isMarkdownLink = isRelativeFile && (
+                    href.endsWith('.md') || 
+                    href.includes('.md#') ||
+                    href.endsWith('.markdown') ||
+                    href.includes('.markdown#')
+                );
+                
+                if (isMarkdownLink) {
+                    // Handle markdown file links with optional anchor
+                    const [filePath, anchor] = href.split('#');
+                    const encodedPath = encodeURIComponent(filePath);
+                    const encodedAnchor = anchor ? encodeURIComponent(anchor) : '';
+                    
+                    return \`<a href="#" class="md-file-link" data-file-path="\${filePath}" data-anchor="\${anchor || ''}" title="Open \${filePath}\${anchor ? ' and jump to #' + anchor : ''}">\${text}</a>\`;
+                } else if (isRelativeFile && href.startsWith('#')) {
+                    // Anchor link within current document
+                    return \`<a href="\${href}" class="anchor-link">\${text}</a>\`;
+                } else {
+                    // External link or other protocols
+                    const target = (href.startsWith('http://') || href.startsWith('https://')) ? ' target="_blank" rel="noopener noreferrer"' : '';
+                    return \`<a href="\${href}"\${target}>\${text}</a>\`;
+                }
+            });
+
+            // Bold (MUST be AFTER links to avoid interfering with link URLs)
+            // Use negative lookahead to avoid matching inside HTML tags/attributes
             html = html.replace(/\\*\\*([^\\*]+)\\*\\*/g, '<strong>$1</strong>');
-            html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+            html = html.replace(/__([^_<]+)__/g, '<strong>$1</strong>');
 
-            // Italic
+            // Italic (MUST be AFTER links to avoid interfering with underscores in link URLs)
+            // CRITICAL: Must not match underscores inside HTML tags or attributes!
+            // Strategy: Split by HTML tags, process only the text parts, then rejoin
             html = html.replace(/\\*([^\\*]+)\\*/g, '<em>$1</em>');
-            html = html.replace(/_([^_]+)_/g, '<em>$1</em>');
+            
+            // For underscore-based italic, we need to be very careful
+            // Split HTML into segments: text vs tags
+            const segments = html.split(/(<[^>]+>)/g);
+            html = segments.map((segment, index) => {
+                // Only process text segments (odd indices), not HTML tags (even indices)
+                if (segment.startsWith('<')) {
+                    // This is an HTML tag, don't process it
+                    return segment;
+                } else {
+                    // This is text content, apply italic formatting
+                    return segment.replace(/_([^_]+)_/g, '<em>$1</em>');
+                }
+            }).join('');
 
             // Strikethrough
             html = html.replace(/~~([^~]+)~~/g, '<s>$1</s>');
-
-            // Links
-            html = html.replace(/\\[([^\\]]+)\\]\\(([^\\)]+)\\)/g, '<a href="$2">$1</a>');
-
-            // Images
-            html = html.replace(/!\\[([^\\]]*)\\]\\(([^\\)]+)\\)/g, '<img src="$2" alt="$1">');
 
             // Process lists (unordered, ordered, and task lists) with proper nesting support
             const listLines = html.split('\\n');
@@ -1201,9 +1548,9 @@ export function getWebviewContent(
                         listStack.push({type: 'task', level: level, hasContent: false});
                     }
                     
-                    // Add list item
+                    // Add list item - wrap checkbox and text in a div for better layout control
                     lastItemIndices[listStack.length - 1] = processedListLines.length;
-                    processedListLines.push(\`<li class="task-list-item" data-line="\${i}" data-indent="\${indent}"><input type="checkbox" \${checked ? 'checked' : ''}> \${text}</li>\`);
+                    processedListLines.push(\`<li class="task-list-item" data-line="\${i}" data-indent="\${indent}"><div class="task-content"><input type="checkbox" \${checked ? 'checked' : ''}><span class="task-text">\${text}</span></div></li>\`);
                     continue;
                 }
                 
@@ -2553,21 +2900,225 @@ export function getWebviewContent(
             }
         });
 
-        document.getElementById('btn-link').addEventListener('click', () => {
-            const url = prompt('Enter URL:');
-            if (url) {
-                const text = prompt('Enter link text:', 'Link');
-                insertText(\`[\${text}](\${url})\`);
-            }
-        });
+        const btnLink = document.getElementById('btn-link');
+        if (btnLink) {
+            btnLink.addEventListener('click', (e) => {
+                try {
+                    console.log('[MDOffice] Link button clicked');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Create link options dialog
+                    const dialog = document.createElement('div');
+                    dialog.style.cssText = \`
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: var(--vscode-editor-background);
+                        border: 2px solid var(--vscode-panel-border);
+                        border-radius: 8px;
+                        padding: 20px;
+                        z-index: 10000;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                        min-width: 450px;
+                        max-width: 600px;
+                    \`;
+                    
+                    dialog.innerHTML = \`
+                        <h3 style="margin: 0 0 15px 0; color: var(--vscode-foreground);">Insert Link</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button id="link-markdown-file" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-align: left;">
+                                📄 <strong>Markdown File Link</strong><br>
+                                <span style="font-size: 11px; opacity: 0.8;">Link to another .md file (opens in MDOffice)</span>
+                            </button>
+                            <button id="link-anchor" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-align: left;">
+                                🔗 <strong>Anchor Link</strong><br>
+                                <span style="font-size: 11px; opacity: 0.8;">Link to heading in current document</span>
+                            </button>
+                            <button id="link-url" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-align: left;">
+                                🌐 <strong>External URL</strong><br>
+                                <span style="font-size: 11px; opacity: 0.8;">Link to website or external resource</span>
+                            </button>
+                            <button id="link-file-anchor" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px; text-align: left;">
+                                📄🔗 <strong>File + Anchor</strong><br>
+                                <span style="font-size: 11px; opacity: 0.8;">Link to specific section in another markdown file</span>
+                            </button>
+                            <button id="link-cancel" style="padding: 12px; background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                ❌ Cancel
+                            </button>
+                        </div>
+                    \`;
+                    
+                    document.body.appendChild(dialog);
+                    
+                    // Add overlay
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = \`
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.5);
+                        z-index: 9999;
+                    \`;
+                    document.body.appendChild(overlay);
+                    
+                    const closeDialog = () => {
+                        document.body.removeChild(dialog);
+                        document.body.removeChild(overlay);
+                    };
+                    
+                    // Markdown file link
+                    dialog.querySelector('#link-markdown-file').addEventListener('click', () => {
+                        closeDialog();
+                        const filePath = prompt('Enter markdown file path:\\n\\nExamples:\\n  ./filename.md (same folder)\\n  ./subfolder/file.md (subfolder)\\n  ../README.md (parent folder)', './');
+                        if (filePath) {
+                            const text = prompt('Enter link text:', filePath.split('/').pop().replace('.md', ''));
+                            insertText(\`[\${text || 'Link'}](\${filePath})\`);
+                        }
+                    });
+                    
+                    // Anchor link
+                    dialog.querySelector('#link-anchor').addEventListener('click', () => {
+                        closeDialog();
+                        const anchor = prompt('Enter heading anchor:\\n\\nExamples:\\n  #features\\n  #getting-started\\n  #api-documentation', '#');
+                        if (anchor) {
+                            const text = prompt('Enter link text:', anchor.replace('#', '').replace(/-/g, ' '));
+                            insertText(\`[\${text || 'Link'}](\${anchor})\`);
+                        }
+                    });
+                    
+                    // External URL
+                    dialog.querySelector('#link-url').addEventListener('click', () => {
+                        closeDialog();
+                        const url = prompt('Enter URL:\\n\\nExamples:\\n  https://example.com\\n  https://github.com/user/repo', 'https://');
+                        if (url) {
+                            const text = prompt('Enter link text:', 'Link');
+                            insertText(\`[\${text}](\${url})\`);
+                        }
+                    });
+                    
+                    // File + Anchor
+                    dialog.querySelector('#link-file-anchor').addEventListener('click', () => {
+                        closeDialog();
+                        const filePath = prompt('Enter markdown file path:', './README.md');
+                        if (filePath) {
+                            const anchor = prompt('Enter heading anchor (e.g., #installation):', '#');
+                            if (anchor) {
+                                const text = prompt('Enter link text:', filePath.split('/').pop().replace('.md', '') + ' - ' + anchor.replace('#', ''));
+                                insertText(\`[\${text || 'Link'}](\${filePath}\${anchor})\`);
+                            }
+                        }
+                    });
+                    
+                    dialog.querySelector('#link-cancel').addEventListener('click', closeDialog);
+                    overlay.addEventListener('click', closeDialog);
+                    
+                } catch (e) {
+                    console.error('[MDOffice] Link button error:', e);
+                    alert('Error inserting link: ' + e.message);
+                }
+            });
+        } else {
+            console.error('[MDOffice] btn-link element not found');
+        }
 
-        document.getElementById('btn-image').addEventListener('click', () => {
-            const url = prompt('Enter image URL:');
-            if (url) {
-                const alt = prompt('Enter alt text:', 'Image');
-                insertText(\`![\${alt}](\${url})\`);
-            }
-        });
+        const btnImage = document.getElementById('btn-image');
+        if (btnImage) {
+            console.log('[MDOffice] btn-image element found, attaching event listener');
+            btnImage.addEventListener('click', (e) => {
+                try {
+                    console.log('[MDOffice] Image button clicked');
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Create a better dialog using HTML
+                    const dialog = document.createElement('div');
+                    dialog.style.cssText = \`
+                        position: fixed;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        background: var(--vscode-editor-background);
+                        border: 2px solid var(--vscode-panel-border);
+                        border-radius: 8px;
+                        padding: 20px;
+                        z-index: 10000;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                        min-width: 400px;
+                    \`;
+                    
+                    dialog.innerHTML = \`
+                        <h3 style="margin: 0 0 15px 0; color: var(--vscode-foreground);">Insert Image</h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button id="img-browse" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                🖼️ Browse File
+                            </button>
+                            <button id="img-url" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                🔗 Enter URL
+                            </button>
+                            <button id="img-clipboard" style="padding: 12px; background: var(--vscode-button-background); color: var(--vscode-button-foreground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                📋 Paste from Clipboard (Ctrl+V)
+                            </button>
+                            <button id="img-cancel" style="padding: 12px; background: var(--vscode-button-secondaryBackground); color: var(--vscode-button-secondaryForeground); border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
+                                ❌ Cancel
+                            </button>
+                        </div>
+                    \`;
+                    
+                    document.body.appendChild(dialog);
+                    
+                    // Add overlay
+                    const overlay = document.createElement('div');
+                    overlay.style.cssText = \`
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(0, 0, 0, 0.5);
+                        z-index: 9999;
+                    \`;
+                    document.body.appendChild(overlay);
+                    
+                    const closeDialog = () => {
+                        document.body.removeChild(dialog);
+                        document.body.removeChild(overlay);
+                    };
+                    
+                    dialog.querySelector('#img-browse').addEventListener('click', () => {
+                        console.log('[MDOffice] Browse file selected');
+                        vscode.postMessage({ type: 'selectImage' });
+                        closeDialog();
+                    });
+                    
+                    dialog.querySelector('#img-url').addEventListener('click', () => {
+                        closeDialog();
+                        const url = prompt('Enter image URL:');
+                        if (url) {
+                            const alt = prompt('Enter alt text:', 'Image');
+                            insertText(\`![\${alt || 'Image'}](\${url})\`);
+                        }
+                    });
+                    
+                    dialog.querySelector('#img-clipboard').addEventListener('click', () => {
+                        closeDialog();
+                        alert('To paste an image from clipboard:\\n\\n1. Copy an image (Ctrl+C or Cmd+C)\\n2. Click in the editor\\n3. Paste (Ctrl+V or Cmd+V)\\n\\nThe image will be automatically saved and inserted!');
+                    });
+                    
+                    dialog.querySelector('#img-cancel').addEventListener('click', closeDialog);
+                    overlay.addEventListener('click', closeDialog);
+                    
+                } catch (e) {
+                    console.error('[MDOffice] Image button error:', e);
+                    alert('Error inserting image: ' + e.message);
+                }
+            });
+        } else {
+            console.error('[MDOffice] btn-image element not found');
+        }
 
         document.getElementById('btn-table').addEventListener('click', () => {
             const table = '\\n| Header 1 | Header 2 | Header 3 |\\n|----------|----------|----------|\\n| Cell 1   | Cell 2   | Cell 3   |\\n| Cell 4   | Cell 5   | Cell 6   |\\n';
@@ -2581,6 +3132,21 @@ export function getWebviewContent(
 
         document.getElementById('btn-save').addEventListener('click', () => {
             notifyChange();
+        });
+
+        // Export buttons
+        document.getElementById('btn-export-html').addEventListener('click', () => {
+            vscode.postMessage({
+                type: 'command',
+                command: 'mdOfficeEditor.exportToHTML'
+            });
+        });
+
+        document.getElementById('btn-export-pdf').addEventListener('click', () => {
+            vscode.postMessage({
+                type: 'command',
+                command: 'mdOfficeEditor.exportToPDF'
+            });
         });
 
         // View mode switching
@@ -3321,6 +3887,106 @@ export function getWebviewContent(
                 return;
             }
             
+            // Handle Enter key for smart list continuation
+            if (e.key === 'Enter') {
+                const start = editor.selectionStart;
+                const text = editor.value;
+                
+                // Find start of current line
+                let lineStart = start;
+                while (lineStart > 0 && text[lineStart - 1] !== '\\n') {
+                    lineStart--;
+                }
+                
+                // Get current line
+                let lineEnd = start;
+                while (lineEnd < text.length && text[lineEnd] !== '\\n') {
+                    lineEnd++;
+                }
+                const currentLine = text.substring(lineStart, lineEnd);
+                
+                // Check if current line is a list item (bullet, numbered, or task)
+                const bulletMatch = currentLine.match(/^(\\s*)[-*+]\\s(.*)$/);
+                const numberedMatch = currentLine.match(/^(\\s*)(\\d+)\\.\\s(.*)$/);
+                const taskMatch = currentLine.match(/^(\\s*)-\\s\\[([ x])\\]\\s(.*)$/);
+                
+                if (taskMatch) {
+                    // Task list item
+                    const indent = taskMatch[1];
+                    const content = taskMatch[3];
+                    
+                    // If the task item is empty (no content after checkbox), end the list
+                    if (content.trim() === '') {
+                        e.preventDefault();
+                        // Remove the empty list item and insert a blank line
+                        const newText = text.substring(0, lineStart) + '\\n' + text.substring(lineEnd);
+                        editor.value = newText;
+                        editor.selectionStart = editor.selectionEnd = lineStart + 1;
+                        updatePreview();
+                        notifyChange();
+                        return;
+                    }
+                    
+                    // Continue with a new task item at the same indentation
+                    e.preventDefault();
+                    const newTask = '\\n' + indent + '- [ ] ';
+                    const newText = text.substring(0, start) + newTask + text.substring(start);
+                    editor.value = newText;
+                    editor.selectionStart = editor.selectionEnd = start + newTask.length;
+                    updatePreview();
+                    notifyChange();
+                    return;
+                } else if (bulletMatch) {
+                    // Regular bullet list
+                    const indent = bulletMatch[1];
+                    const content = bulletMatch[2];
+                    
+                    if (content.trim() === '') {
+                        e.preventDefault();
+                        const newText = text.substring(0, lineStart) + '\\n' + text.substring(lineEnd);
+                        editor.value = newText;
+                        editor.selectionStart = editor.selectionEnd = lineStart + 1;
+                        updatePreview();
+                        notifyChange();
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    const newBullet = '\\n' + indent + '- ';
+                    const newText = text.substring(0, start) + newBullet + text.substring(start);
+                    editor.value = newText;
+                    editor.selectionStart = editor.selectionEnd = start + newBullet.length;
+                    updatePreview();
+                    notifyChange();
+                    return;
+                } else if (numberedMatch) {
+                    // Numbered list
+                    const indent = numberedMatch[1];
+                    const num = parseInt(numberedMatch[2]);
+                    const content = numberedMatch[3];
+                    
+                    if (content.trim() === '') {
+                        e.preventDefault();
+                        const newText = text.substring(0, lineStart) + '\\n' + text.substring(lineEnd);
+                        editor.value = newText;
+                        editor.selectionStart = editor.selectionEnd = lineStart + 1;
+                        updatePreview();
+                        notifyChange();
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    const newNumbered = '\\n' + indent + (num + 1) + '. ';
+                    const newText = text.substring(0, start) + newNumbered + text.substring(start);
+                    editor.value = newText;
+                    editor.selectionStart = editor.selectionEnd = start + newNumbered.length;
+                    updatePreview();
+                    notifyChange();
+                    return;
+                }
+                // If not a list item, let default Enter behavior happen
+            }
+            
             if (e.ctrlKey || e.metaKey) {
                 // Note: Ctrl+Z and Ctrl+Shift+Z work natively in textarea, so we don't override them
                 if (e.key === 'f') {
@@ -3530,6 +4196,204 @@ export function getWebviewContent(
             }
         });
 
+        // Clipboard paste handler for images
+        editor.addEventListener('paste', async (e) => {
+            console.log('[MDOffice] Paste event in editor');
+            const items = e.clipboardData?.items;
+            if (!items) {
+                console.log('[MDOffice] No clipboard items');
+                return;
+            }
+            
+            console.log('[MDOffice] Clipboard items count:', items.length);
+            for (let i = 0; i < items.length; i++) {
+                console.log('[MDOffice] Item', i, 'type:', items[i].type);
+                if (items[i].type.indexOf('image') !== -1) {
+                    console.log('[MDOffice] Image detected in clipboard!');
+                    e.preventDefault();
+                    const blob = items[i].getAsFile();
+                    if (!blob) {
+                        console.log('[MDOffice] Failed to get blob');
+                        continue;
+                    }
+                    
+                    console.log('[MDOffice] Image blob size:', blob.size);
+                    
+                    // Read blob as data URL
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const imageData = event.target.result;
+                        console.log('[MDOffice] Image data loaded, length:', imageData ? imageData.length : 0);
+                        const altText = prompt('Enter alt text for pasted image:', 'Pasted image') || 'Pasted image';
+                        
+                        console.log('[MDOffice] Sending saveImageFromClipboard message');
+                        // Send to extension to save the image
+                        vscode.postMessage({
+                            type: 'saveImageFromClipboard',
+                            imageData: imageData,
+                            altText: altText
+                        });
+                    };
+                    reader.onerror = (error) => {
+                        console.error('[MDOffice] Error reading image:', error);
+                    };
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+        });
+
+        preview.addEventListener('paste', async (e) => {
+            console.log('[MDOffice] Paste event in preview');
+            const items = e.clipboardData?.items;
+            if (!items) {
+                console.log('[MDOffice] No clipboard items in preview');
+                return;
+            }
+            
+            console.log('[MDOffice] Clipboard items count in preview:', items.length);
+            for (let i = 0; i < items.length; i++) {
+                console.log('[MDOffice] Preview item', i, 'type:', items[i].type);
+                if (items[i].type.indexOf('image') !== -1) {
+                    console.log('[MDOffice] Image detected in preview clipboard!');
+                    e.preventDefault();
+                    const blob = items[i].getAsFile();
+                    if (!blob) {
+                        console.log('[MDOffice] Failed to get blob in preview');
+                        continue;
+                    }
+                    
+                    console.log('[MDOffice] Preview image blob size:', blob.size);
+                    
+                    // Read blob as data URL
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const imageData = event.target.result;
+                        console.log('[MDOffice] Preview image data loaded, length:', imageData ? imageData.length : 0);
+                        const altText = prompt('Enter alt text for pasted image:', 'Pasted image') || 'Pasted image';
+                        
+                        console.log('[MDOffice] Sending saveImageFromClipboard message from preview');
+                        // Send to extension to save the image
+                        vscode.postMessage({
+                            type: 'saveImageFromClipboard',
+                            imageData: imageData,
+                            altText: altText
+                        });
+                    };
+                    reader.onerror = (error) => {
+                        console.error('[MDOffice] Error reading image in preview:', error);
+                    };
+                    reader.readAsDataURL(blob);
+                    break;
+                }
+            }
+        });
+
+        // Drag and drop handler for images in editor
+        editor.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        editor.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer?.files;
+            if (!files || files.length === 0) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const imageData = event.target.result;
+                        const altText = prompt('Enter alt text for dropped image:', file.name) || file.name;
+                        
+                        // Send to extension to save the image
+                        vscode.postMessage({
+                            type: 'saveImageFromClipboard',
+                            imageData: imageData,
+                            altText: altText
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        // Drag and drop handler for images in preview
+        preview.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        preview.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            const files = e.dataTransfer?.files;
+            if (!files || files.length === 0) return;
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const imageData = event.target.result;
+                        const altText = prompt('Enter alt text for dropped image:', file.name) || file.name;
+                        
+                        // Send to extension to save the image
+                        vscode.postMessage({
+                            type: 'saveImageFromClipboard',
+                            imageData: imageData,
+                            altText: altText
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        // Handle markdown file links - click to open in MDOffice
+        preview.addEventListener('click', (e) => {
+            const target = e.target;
+            
+            // Check if clicked on a markdown file link
+            if (target.classList && target.classList.contains('md-file-link')) {
+                e.preventDefault();
+                const filePath = target.getAttribute('data-file-path');
+                const anchor = target.getAttribute('data-anchor');
+                
+                console.log('[MDOffice] Opening linked file:', filePath, 'anchor:', anchor);
+                
+                // Send message to extension to open the file
+                vscode.postMessage({
+                    type: 'openLinkedFile',
+                    filePath: filePath,
+                    anchor: anchor || ''
+                });
+                return;
+            }
+            
+            // Check if clicked on an anchor link (same document)
+            if (target.classList && target.classList.contains('anchor-link')) {
+                e.preventDefault();
+                const href = target.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    const anchorId = href.substring(1);
+                    console.log('[MDOffice] Scrolling to anchor:', anchorId);
+                    
+                    // Try to find the heading with this ID
+                    const headingElement = preview.querySelector(\`[id="\${anchorId}"]\`) || 
+                                          preview.querySelector(\`h1, h2, h3, h4, h5, h6\`);
+                    
+                    if (headingElement) {
+                        headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        console.warn('[MDOffice] Anchor not found:', anchorId);
+                    }
+                }
+                return;
+            }
+        });
+
         // Handle messages from extension
         window.addEventListener('message', event => {
             const message = event.data;
@@ -3599,6 +4463,46 @@ export function getWebviewContent(
                 case 'restoreThemeMode':
                     if (message.themeMode) {
                         applyTheme(message.themeMode);
+                    }
+                    break;
+                case 'insertImage':
+                    if (message.markdown) {
+                        insertText(message.markdown);
+                        if (preview.contentEditable === 'true' && viewMode.value !== 'editor') {
+                            preview.focus();
+                        } else {
+                            editor.focus();
+                        }
+                    }
+                    break;
+                case 'scrollToAnchor':
+                    if (message.anchor) {
+                        // Generate slug the same way as headings
+                        const anchorSlug = message.anchor.toLowerCase()
+                            .replace(/<[^>]*>/g, '')
+                            .replace(/[^a-z0-9\\s-]/g, '')
+                            .replace(/\\s+/g, '-')
+                            .replace(/-+/g, '-')
+                            .replace(/^-|-$/g, '');
+                        
+                        console.log('[MDOffice] Scrolling to anchor:', anchorSlug);
+                        
+                        // Find the heading with this ID
+                        const headingElement = preview.querySelector(\`[id="\${anchorSlug}"]\`);
+                        
+                        if (headingElement) {
+                            // Small delay to ensure preview is rendered
+                            setTimeout(() => {
+                                headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                // Highlight the heading briefly
+                                headingElement.style.backgroundColor = 'rgba(255, 255, 0, 0.3)';
+                                setTimeout(() => {
+                                    headingElement.style.backgroundColor = '';
+                                }, 2000);
+                            }, 200);
+                        } else {
+                            console.warn('[MDOffice] Anchor not found in preview:', anchorSlug);
+                        }
                     }
                     break;
             }

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-sample</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 48px;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+    </style>
+</head>
+<body>
+<h1>Welcome to MDOffice - Markdown Office Editor!</h1>
+<p>This is a sample markdown file to test the <strong>MDOffice - Markdown Office Editor</strong> extension.</p>
+<h2>Features Demo</h2>
+<h3>Text Formatting</h3>
+<p>You can use <strong>bold text</strong>, <em>italic text</em>, <s>strikethrough</s>, and <code>inline code</code>.</p>
+<h3>Lists</h3>
+<h4>Bullet List</h4>
+<ul>
+<li>First item</li>
+<li>Second item</li>
+<li>Third item
+<ul>
+<li>Nested item</li>
+<li>Another nested item</li>
+</ul>
+</li>
+</ul>
+<h4>Numbered List</h4>
+<ol>
+<li>First step</li>
+<li>Second step</li>
+<li>Third step</li>
+</ol>
+<h4>Task List</h4>
+<ul class="task-list">
+<li>[x] Create the extension</li>
+<li>[x] Add formatting toolbar</li>
+<li>[ ] Add synchronized scrolling</li>
+<li>[ ] Add more export options</li>
+</ul>
+<h3>Links and Images</h3>
+<p>Check out <a href="https://code.visualstudio.com/">VS Code</a> for more information.</p>
+<p><img src="https://via.placeholder.com/400x200?text=Sample+Image" alt="Sample Image"></p>
+<h3>Code Blocks</h3>
+<p>Here’s a JavaScript code example:</p>
+<pre><code class="language-javascript">function greet(name) {
+    console.log(`Hello, ${name}!`);
+}
+
+greet('World');
+</code></pre>
+<p>And here’s some Python:</p>
+<pre><code class="language-python">def calculate_sum(a, b):
+    return a + b
+
+result = calculate_sum(5, 3)
+print(f&quot;The sum is: {result}&quot;)
+</code></pre>
+<h3>Tables</h3>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Status</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Text Formatting</td>
+<td>✅ Complete</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Live Preview</td>
+<td>✅ Complete</td>
+<td>High</td>
+</tr>
+<tr>
+<td>Export to HTML</td>
+<td>✅ Complete</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>Sync Scroll</td>
+<td>🚧 Planned</td>
+<td>Medium</td>
+</tr>
+<tr>
+<td>PDF Export</td>
+<td>🚧 Planned</td>
+<td>Low</td>
+</tr>
+</tbody>
+</table>
+<h3>Blockquotes</h3>
+<blockquote>
+<p>This is a blockquote. It can span multiple lines and is great for highlighting important information or quotes from other sources.</p>
+<p>You can even have multiple paragraphs in a blockquote!</p>
+</blockquote>
+<h3>Horizontal Rule</h3>
+<hr>
+<h2>Try It Out!</h2>
+<ol>
+<li>Click the formatting buttons in the toolbar above</li>
+<li>Use keyboard shortcuts:
+<ul>
+<li><code>Ctrl+B</code> for <strong>bold</strong></li>
+<li><code>Ctrl+I</code> for <em>italic</em></li>
+<li><code>Ctrl+K</code> for links</li>
+<li><code>Ctrl+S</code> to save</li>
+</ul>
+</li>
+<li>Switch between view modes using the dropdown</li>
+<li>Export to HTML or PDF when you’re done</li>
+</ol>
+<h3>More Examples</h3>
+<h4>Nested Lists with Mixed Types</h4>
+<ol>
+<li>First numbered item
+<ul>
+<li>Bullet point under first item</li>
+<li>Another bullet point</li>
+</ul>
+</li>
+<li>Second numbered item<ul class="task-list">
+<li>[ ] Task under second item</li>
+<li>[x] Completed task</li>
+</ul>
+</li>
+<li>Third numbered item</li>
+</ol>
+<h4>Complex Tables</h4>
+<table>
+<thead>
+<tr>
+<th>Syntax</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>**text**</code></td>
+<td>Bold</td>
+<td><strong>bold text</strong></td>
+</tr>
+<tr>
+<td><code>*text*</code></td>
+<td>Italic</td>
+<td><em>italic text</em></td>
+</tr>
+<tr>
+<td><code>~~text~~</code></td>
+<td>Strikethrough</td>
+<td><s>strikethrough</s></td>
+</tr>
+<tr>
+<td><code>`code`</code></td>
+<td>Inline Code</td>
+<td><code>code snippet</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<p><strong>Happy Editing!</strong> 🎉</p>
+<p>Try creating your own content using the toolbar buttons above, or type markdown directly. The preview updates in real-time!</p>
+
+</body>
+</html>

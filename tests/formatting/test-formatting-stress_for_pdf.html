@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test-formatting-stress</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 216mm;
+            margin: 0 auto;
+            padding: 12.6984126984127mm;
+            background: white;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
+        }
+
+        h1 { font-size: 2em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h2 { font-size: 1.5em; border-bottom: 1px solid #eaecef; padding-bottom: 0.3em; }
+        h3 { font-size: 1.25em; }
+        h4 { font-size: 1em; }
+        h5 { font-size: 0.875em; }
+        h6 { font-size: 0.85em; color: #6a737d; }
+
+        p {
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        ul, ol {
+            padding-left: 2em;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 4px;
+        }
+
+        code {
+            background: #f6f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background: #f6f8fa;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        blockquote {
+            margin: 0 0 16px 0;
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 4px solid #dfe2e5;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 13px;
+            border: 1px solid #dfe2e5;
+        }
+
+        table th {
+            font-weight: 600;
+            background: #f6f8fa;
+        }
+
+        table tr:nth-child(2n) {
+            background: #f6f8fa;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        hr {
+            border: 0;
+            border-top: 1px solid #dfe2e5;
+            margin: 24px 0;
+        }
+
+        /* Task lists (checklists) - Improved styling */
+        ul.task-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 16px;
+        }
+
+        .task-list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 6px 10px;
+            margin-bottom: 4px;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"] {
+            margin-top: 3px;
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            border-radius: 3px;
+            border: 2px solid #999;
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: white;
+            position: relative;
+        }
+
+        .task-list-item input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .task-list-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+            color: #888;
+            text-decoration: line-through;
+        }
+
+        .task-list-item .task-text {
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        li > .task-list {
+            padding-left: 28px;
+            margin-top: 6px;
+            position: relative;
+        }
+
+        li > .task-list::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.01);
+        }
+
+        .task-list .task-list .task-list .task-list-item {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        
+        @media print {
+            body {
+                max-width: 100%;
+                padding: 0;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+<h1>Formatting Stress Test</h1>
+
+This document stress tests various formatting combinations and edge cases.
+
+<h2>Compétitivité et capital</h2>
+
+<em>Italic text</em>
+<em><strong>Bold and italic</strong></em>
+<s>Strikethrough text</s>
+<code>Inline cod</code>
+*<em>Bold with </em>nested italic<em> inside</em>**<em>
+
+</em>
+<em>
+</em>Italic with <strong>nested bold</strong> inside<em>
+<strong>Bold with <code>code</code> inside</strong>
+</em>Italic with <code>code</code> inside<em>
+<s>Strike with <strong>bold</strong> inside</s>
+<s>Strike with </s></em><s>italic</s><em><s> inside<strong></s>
+<s>Strike with <code>code</code> inside</s>
+<code>Code with </strong>attempted bold<strong> inside (should not work)</code>
+<h2>Massive Table</h2>
+
+| H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 | H9 | H10 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| A1 | A2 | A3 | A4 | A5 | A6 | A7 | A8 | A9 | A10 |
+| B1 | B2 | B3 | B4 | B5 | B6 | B7 | B8 | B9 | B10 |
+| C1 | C2 | C3 | C4 | C5 | C6 | C7 | C8 | C9 | C10 |
+| D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9 | D10 |
+| E1 | E2 | E3 | E4 | E5 | E6 | E7 | E8 | E9 | E10 |
+| F1 | F2 | F3 | F4 | F5 | F6 | F7 | F8 | F9 | F10 |
+| G1 | G2 | G3 | G4 | G5 | G6 | G7 | G8 | G9 | G10 |
+| H1 | H2 | H3 | H4 | H5 | H6 | H7 | H8 | H9 | H10 |
+| I1 | I2 | I3 | I4 | I5 | I6 | I7 | I8 | I9 | I10 |
+| J1 | J2 | J3 | J4 | J5 | J6 | J7 | J8 | J9 | J10 |
+
+<h2>All Header Levels</h2>
+
+<h1>Header 1</h1>
+
+<h2>Header 2</h2>
+
+<h3>Header 3</h3>
+
+<h4>Header 4</h4>
+
+<h5>Header 5</h5>
+
+<h6>Header 6</h6>
+
+<h1>🎉 Header with Emoji</h1>
+
+<h2>Header with </strong>Bold</em><em> Text</h2>
+
+</em>### <em>Header with </em>Italic<em> Text</em>
+<em>
+<h4>Header with <code>Code</code> Text</h4>
+
+<h5>Header with <a href="https://example.com">Link</a></h5>
+
+<h6>Header with <s>Strikethrough</s></h6>
+
+<h2>Long Lists</h2>
+
+1. Item 1
+
+1. Item 2
+
+1. Item 3
+
+1. Item 4
+
+1. Item 5
+
+1. Item 6
+
+1. Item 7
+
+1. Item 8
+
+1. Item 9
+
+1. Item 10
+
+1. Item 11
+
+1. Item 12
+
+1. Item 13
+
+1. Item 14
+
+1. Item 15
+
+1. Item 16
+
+1. Item 17
+
+1. Item 18
+
+1. Item 19
+
+1. Item 20
+
+1. Item 21
+
+1. Item 22
+
+1. Item 23
+
+1. Item 24
+
+1. Item 25
+
+1. Item 26
+
+1. Item 27
+
+1. Item 28
+
+1. Item 29
+
+1. Item 30
+
+<h2>Bullet List Marathon</h2>
+
+<ul><li>Apple</li></ul>
+
+<ul><li>Banana</li></ul>
+
+<ul><li>Cherry</li></ul>
+
+<ul><li>Date</li></ul>
+
+<ul><li>Elderberry</li></ul>
+
+<ul><li>Fig</li></ul>
+
+<ul><li>Grape</li></ul>
+
+<ul><li>Honeydew</li></ul>
+
+<ul><li>Ice cream bean</li></ul>
+
+<ul><li>Jackfruit</li></ul>
+
+<ul><li>Kiwi</li></ul>
+
+<ul><li>Lemon</li></ul>
+
+<ul><li>Mango</li></ul>
+
+<ul><li>Nectarine</li></ul>
+
+<ul><li>Orange</li></ul>
+
+<ul><li>Papaya</li></ul>
+
+<ul><li>Quince</li></ul>
+
+<ul><li>Raspberry</li></ul>
+
+<ul><li>Strawberry</li></ul>
+
+<ul><li>Tangerine</li></ul>
+
+<ul><li>Ugli fruit</li></ul>
+
+<ul><li>Vanilla</li></ul>
+
+<ul><li>Watermelon</li></ul>
+
+<ul><li>Xigua</li></ul>
+
+<ul><li>Yellow passion fruit</li></ul>
+
+<ul><li>Zucchini</li></ul>
+
+<h2>Code Blocks in Many Languages</h2>
+
+<h3>Python</h3>
+
+<pre><code>
+
+python
+def fibonacci(n):
+    if n &lt;= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+<code>print(fibonacci(10))
+</code>
+
+</code></pre>
+
+<h3>JavaScript</h3>
+
+</em>
+<em>
+<pre><code>
+</em><code>
+</code><em><code>javascript
+function factorial(n) {
+    return n &lt;= 1 ? 1 : n </code></em> factorial(n - 1);
+}
+<code>console.log(factorial(5));
+</code>
+<em>
+</code></pre>
+
+</em>
+<h3>Java</h3>
+
+<pre><code>
+
+java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+
+</code></pre>
+
+<h3>C++</h3>
+
+<pre><code>
+
+cpp
+#include &lt;iostream&gt;
+<code>int main() {
+    std::cout &lt;&lt; "Hello, World!" &lt;&lt; std::endl;
+    return 0;
+}
+</code>
+
+</code></pre>
+
+<h3>HTML</h3>
+
+<pre><code>
+
+html
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Test Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Hello, World!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</code></pre>
+
+<h3>CSS</h3>
+
+<pre><code>
+
+css
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+<code>h1 {
+    color: #333;
+    text-align: center;
+}
+</code>
+
+</code></pre>
+
+<h3>SQL</h3>
+
+<em>
+<pre><code>
+</em><code>
+sql
+SELECT users.name, orders.total
+FROM users
+INNER JOIN orders ON users.id = orders.user</code><em>id
+WHERE orders.status = 'completed'
+ORDER BY orders.total DESC
+LIMIT 10;
+</em>
+<em>
+</code></pre>
+
+</em>
+<em>
+<h3>Bash</h3>
+
+<pre><code>
+
+bash
+#!/bin/bash
+<code>for i in {1..10}
+do
+    echo "Number: $i"
+done
+</code>
+
+</code></pre>
+
+<h3>JSON</h3>
+
+<pre><code>
+
+json
+{
+    "name": "Test User",
+    "email": "test@example.com",
+    "age": 30,
+    "active": true,
+    "roles": ["user", "admin"],
+    "metadata": {
+        "created": "2023-01-01",
+        "updated": "2023-12-31"
+    }
+}
+
+</code></pre>
+
+<h3>XML</h3>
+
+<pre><code>
+
+xml
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;users&gt;
+    &lt;user id="1"&gt;
+        &lt;name&gt;John Doe&lt;/name&gt;
+        &lt;email&gt;john@example.com&lt;/email&gt;
+    &lt;/user&gt;
+    &lt;user id="2"&gt;
+        &lt;name&gt;Jane Smith&lt;/name&gt;
+        &lt;email&gt;jane@example.com&lt;/email&gt;
+    &lt;/user&gt;
+&lt;/users&gt;
+
+</code></pre>
+
+<h2>Multiple Blockquotes</h2>
+
+<blockquote>First blockquote</blockquote>
+
+<blockquote>Second blockquote</blockquote>
+
+<blockquote>Third blockquote with <strong>bold</strong></blockquote>
+
+<blockquote>Fourth blockquote with </em>italic<em></blockquote>
+
+<blockquote>Fifth blockquote with <code>code</code></blockquote>
+
+<blockquote>Sixth blockquote with <a href="https://example.com">link</a></blockquote>
+
+<blockquote>Seventh blockquote</blockquote>
+<blockquote>that spans multiple</blockquote>
+<blockquote>lines for testing</blockquote>
+<blockquote>purposes</blockquote>
+
+<h2>Link Collection</h2>
+
+<a href="https://google.com">Google</a>
+<a href="https://github.com">GitHub</a>
+<a href="https://stackoverflow.com">Stack Overflow</a>
+<a href="https://developer.mozilla.org">MDN</a>
+<a href="https://w3schools.com">W3Schools</a>
+<a href="https://reddit.com">Reddit</a>
+<a href="https://twitter.com">Twitter</a>
+<a href="https://facebook.com">Facebook</a>
+<a href="https://linkedin.com">LinkedIn</a>
+<a href="https://youtube.com">YouTube</a>
+<h2>Image Gallery</h2>
+
+!<a href="https://via.placeholder.com/150">Placeholder 1</a>
+!<a href="https://via.placeholder.com/150/FF0000">Placeholder 2</a>
+!<a href="https://via.placeholder.com/150/00FF00">Placeholder 3</a>
+!<a href="https://via.placeholder.com/150/0000FF">Placeholder 4</a>
+!<a href="https://via.placeholder.com/150/FFFF00">Placeholder 5</a>
+!<a href="https://via.placeholder.com/150/FF00FF">Placeholder 6</a>
+!<a href="https://via.placeholder.com/150/00FFFF">Placeholder 7</a>
+!<a href="https://via.placeholder.com/150/FFA500">Placeholder 8</a>
+
+<h2>Horizontal Rule Variations</h2>
+
+<hr>
+
+</em>***<em>
+
+</em>
+<em>
+</em>_<em>
+<ul><li>- -</li></ul>
+
+</em> <em> </em>
+<em> </em> <em>
+<h2>Mixed Content Paragraph</h2>
+
+This paragraph contains <strong>bold text</strong>, </em>italic text<em>, <code>inline code</code>, <a href="https://example.com">a link</a>, <s>strikethrough</s>, </em><strong>bold italic</strong><em>, and even some $math$ if supported. It also has an !<a href="https://via.placeholder.com/20">inline image</a> and continues with more text. The goal is to test how all these elements render together in a single paragraph without breaking the flow or causing rendering issues.
+
+<h2>Stress Test Combinations</h2>
+
+</em><em>Bold </em>and italic<em> together</em>**<em>
+
+</em>
+<em>
+</em>Italic <strong>and bold</strong> together<em>
+<code>Code with <strong>bold</strong> attempt</code>
+<a href="https://example.com">Link to <strong>bold</strong> text</a>
+<a href="https://example.com"><strong>Bold</strong> link text</a>
+<strong><a href="https://example.com">Bold link</a></strong>
+</em><a href="https://example.com">Italic link</a><em>
+<s><a href="https://example.com">Strikethrough link</a></s>
+</em>&gt; <em>
+
+<blockquote><strong>Bold blockquote</strong> with </em>italic<em> and <code>code</code></blockquote>
+<blockquote></em></blockquote>
+<blockquote><em></blockquote>
+
+</em>
+<em>
+</em>- 
+<em>- 
+<ul><li></em><em><strong>Bold bullet</strong> with </em>italic<em> and <code>code</code> and <a href="url">link</a></em><em></li></ul>
+<ul><li></em></li></ul>
+<ul><li><em></li></ul>
+</em>1. 
+<em>1. 
+2. </em><em><strong>Bold number</strong> with </em>italic<em> and <code>code</code> and <a href="url">link</a></em><em>
+3. 
+
+</em>
+1. 
+
+<em>
+| <strong>Bold</strong> | Italic</em><em><strong> | <code>Code</code> | <a href="url">Link</a> | <s>Strike</s> |
+| --- | --- | --- | --- | --- |
+| B</strong></em> | I | <code>C</code> | <a href="url">L</a> | <s>S</s> |
+
+<h2>Special Characters Collection</h2>
+
+<h3>Currency</h3>
+
+$ € £ ¥ ₹ ₽ ₿ ¢ ₱ ₩ ₴ ₦ ₡ ₨
+
+<h3>Math</h3>
+
++ - × ÷ = ≠ &lt; &gt; ≤ ≥ ± ∓ ∑ ∫ √ ∞ π ∂ Δ Π
+
+<h3>Arrows</h3>
+
+→ ← ↑ ↓ ↔ ⇒ ⇐ ⇑ ⇓ ⇔ ⤴ ⤵ ↩ ↪
+
+<h3>Shapes</h3>
+
+○ ● ◯ ◆ ◇ ■ □ ▪ ▫ ▲ △ ▼ ▽ ★ ☆
+
+<h3>Symbols</h3>
+
+© ® ™ § ¶ † ‡ • ‰ ′ ″ ‴ ‹ › « » ‐ ‑ ‒ – — ―
+
+<h3>Emoji</h3>
+
+😀 😃 😄 😁 😆 😅 🤣 😂 🙂 🙃 😉 😊 😇 🥰 😍 🤩 😘 😗 ☺ 😚 😙
+
+<h3>More Emoji</h3>
+
+❤ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💔 ❣ 💕 💞 💓 💗 💖 💘 💝 ✨ ⭐ 🌟 ✅ ❌ ⚠ 🚀
+
+<h2>End of Stress Test</h2>
+
+This is the end of the formatting stress test document. All edge cases above should render correctly!
+
+*
+</body>
+</html>
